@@ -1,0 +1,91 @@
+{
+  "name": "azure-functions-mongooser",
+  "version": "1.0.0",
+  "description": "Mongoose-based RESTful API implementation on Azure Functions with TypeScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azure-seed/azure-functions-mongooser.git"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "mongoose",
+    "mongodb",
+    "azure-functions",
+    "azure"
+  ],
+  "author": {
+    "name": "Burak Tasci",
+    "email": "me@fulls1z3.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/azure-seed/azure-functions-mongooser/issues"
+  },
+  "homepage": "https://github.com/azure-seed/azure-functions-mongooser#readme",
+  "scripts": {
+    "clean": "rimraf .cache dist",
+    "build": "ts-node ./tools/build/rollup.ts && rimraf .temp",
+    "ci:before": "greenkeeper-lockfile-update",
+    "ci:after": "greenkeeper-lockfile-upload",
+    "lint": "tslint -p ./tslint.json --force",
+    "test": "jest --coverage --colors",
+    "test:ci": "jest --ci --coverage --colors",
+    "release": "standard-version"
+  },
+  "main": "./bundles/azure-functions-mongooser.umd.js",
+  "module": "./azure-functions-mongooser.es5.js",
+  "es2015": "./azure-functions-mongooser.js",
+  "typings": "./index.d.ts",
+  "devDependencies": {
+    "azure-functions-ts-essentials": "1.1.1",
+    "mongoose": "~4.12.0",
+    "typegoose": "~3.4.7",
+    "@types/jest": "~21.1.2",
+    "@types/mongodb": "~2.2.12",
+    "@types/mongoose": "~4.7.23",
+    "@types/node": "~8.0.32",
+    "rimraf": "~2.6.2",
+    "ts-node": "~3.3.0",
+    "glob": "~7.1.2",
+    "camelcase": "~4.1.0",
+    "rollup": "~0.42.0",
+    "rollup-plugin-node-resolve": "~3.0.0",
+    "rollup-plugin-commonjs": "~8.2.1",
+    "rollup-plugin-sourcemaps": "~0.4.2",
+    "rollup-plugin-uglify": "~2.0.1",
+    "jest": "~21.2.1",
+    "jest-junit-reporter": "~1.1.0",
+    "ts-jest": "~21.0.1",
+    "standard-version": "~4.2.0",
+    "tslint": "~5.7.0",
+    "backend-tslint-rules": "1.0.0",
+    "typescript": "~2.5.3"
+  },
+  "peerDependencies": {
+    "azure-functions-ts-essentials": ">=1.1.1",
+    "mongoose": ">=4.12.0",
+    "typegoose": ">=3.4.7"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/*.spec.ts"
+    ],
+    "mapCoverage": true,
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testResultsProcessor": "./node_modules/jest-junit-reporter",
+    "cache": false,
+    "silent": true
+  },
+  "greenkeeper": {
+    "ignore": [
+      "rollup"
+    ]
+  }
+}
