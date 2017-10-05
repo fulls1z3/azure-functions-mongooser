@@ -94,21 +94,21 @@ export function mock(context: Context, req: HttpRequest): any {
 }
 
 describe('@azure-seed/azure-functions-mongooser', () => {
-  beforeAll(async () => {
-    (mongoose as any).Promise = Promise;
-
-    await connect(mongoose, PRODUCTION_CONNSTRING);
-    await mongoose.connection.db.dropCollection(OBJECT_NAME);
-    await model.insertMany(INITIAL_ITEMS);
-  });
-
-  afterAll(async () => {
-    (mongoose as any).Promise = Promise;
-    await connect(mongoose, PRODUCTION_CONNSTRING);
-
-    await mongoose.connection.db.dropCollection(OBJECT_NAME);
-    await mongoose.connection.close();
-  });
+  // beforeAll(async () => {
+  //   (mongoose as any).Promise = Promise;
+  //
+  //   await connect(mongoose, PRODUCTION_CONNSTRING);
+  //   await mongoose.connection.db.dropCollection(OBJECT_NAME);
+  //   await model.insertMany(INITIAL_ITEMS);
+  // });
+  //
+  // afterAll(async () => {
+  //   (mongoose as any).Promise = Promise;
+  //   await connect(mongoose, PRODUCTION_CONNSTRING);
+  //
+  //   await mongoose.connection.db.dropCollection(OBJECT_NAME);
+  //   await mongoose.connection.close();
+  // });
 
   describe('GET /api/v0/mock-items', () => {
     it('should be able to return a list of `active` items', (done: () => void) => {
