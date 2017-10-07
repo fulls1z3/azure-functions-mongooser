@@ -40,6 +40,20 @@ export function parseFields(rawFields: string): any {
     }, {});
 }
 
+/**
+ * Clears an existing collection using recursive retries.
+ *
+ * @param {"mongoose".Mongoose} instance
+ * @param {string} name
+ * @returns {Promise<any>}
+ */
+export function clearCollection(instance: mongoose.Mongoose, name: string): Promise<any> {
+  const collection = instance.connection.collections[name];
+
+  return collection.drop()
+    .catch(() => clearCollection(instance, name));
+}
+
 export class Mongooser<T extends BaseDocument> {
   constructor(private readonly model: any,
               private readonly objectName: string,
