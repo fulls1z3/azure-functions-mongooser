@@ -47,7 +47,11 @@ class MockItem extends BaseDocument implements Activatable {
   isActive: boolean;
 }
 
-const model = new MockItem().getModelForClass(MockItem);
+const model = new MockItem().getModelForClass(MockItem, {
+  schemaOptions: {
+    collection: OBJECT_NAME
+  }
+});
 
 export function mock(context: Context, req: HttpRequest): any {
   (mongoose as any).Promise = Promise;
