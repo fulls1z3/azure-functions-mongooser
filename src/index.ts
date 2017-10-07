@@ -91,7 +91,7 @@ export class Mongooser<T extends BaseDocument> {
     })
     .catch((err: any) => ({
       status: HttpStatusCode.InternalServerError,
-      body: {}
+      body: err
     }));
   };
 
@@ -134,7 +134,7 @@ export class Mongooser<T extends BaseDocument> {
       })
       .catch((err: any) => ({
         status: HttpStatusCode.InternalServerError,
-        body: {}
+        body: err
       }));
   };
 
@@ -169,7 +169,7 @@ export class Mongooser<T extends BaseDocument> {
       })
       .catch((err: any) => ({
         status: HttpStatusCode.InternalServerError,
-        body: {}
+        body: err
       }));
   };
 
@@ -218,7 +218,7 @@ export class Mongooser<T extends BaseDocument> {
       })
       .catch((err: any) => ({
         status: HttpStatusCode.InternalServerError,
-        body: {}
+        body: err
       }));
   };
 
@@ -253,7 +253,7 @@ export class Mongooser<T extends BaseDocument> {
       })
       .catch((err: any) => ({
         status: HttpStatusCode.InternalServerError,
-        body: {}
+        body: err
       }));
   };
 }
