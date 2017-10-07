@@ -6,7 +6,7 @@ import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '
 // module
 import { Activatable } from './models/activatable';
 import { BaseDocument } from './models/base-document';
-import { connect, Mongooser, parseFields } from './index';
+import { clearCollection, connect, Mongooser, parseFields } from './index';
 
 const PRODUCTION_CONNSTRING = 'mongodb://localhost:27017/test_collection';
 const OBJECT_NAME = 'mockItem';
@@ -47,7 +47,11 @@ class MockItem extends BaseDocument implements Activatable {
   isActive: boolean;
 }
 
-const model = new MockItem().getModelForClass(MockItem);
+const model = new MockItem().getModelForClass(MockItem, {
+  schemaOptions: {
+    collection: OBJECT_NAME
+  }
+});
 
 export function mock(context: Context, req: HttpRequest): any {
   (mongoose as any).Promise = Promise;
@@ -98,7 +102,16 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     (mongoose as any).Promise = Promise;
 
     await connect(mongoose, PRODUCTION_CONNSTRING);
+    await clearCollection(mongoose, OBJECT_NAME);
     await model.insertMany(INITIAL_ITEMS);
+  });
+
+  afterAll(async () => {
+    (mongoose as any).Promise = Promise;
+
+    await connect(mongoose, PRODUCTION_CONNSTRING);
+    await clearCollection(mongoose, OBJECT_NAME);
+    await mongoose.connection.close();
   });
 
   describe('GET /api/v0/mock-items', () => {
