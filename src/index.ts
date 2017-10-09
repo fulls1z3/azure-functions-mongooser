@@ -90,7 +90,7 @@ export class Mongooser<T extends BaseDocument> {
    * @param id
    * @returns {Promise<any>}
    */
-  getOne = (id: any): Promise<any> => {
+  getOne(id: any): Promise<any> {
     const query = this.model.findOne({ _id: id }).lean();
 
     return query.
@@ -113,17 +113,16 @@ export class Mongooser<T extends BaseDocument> {
         };
       })
       .catch(getErrorResponse);
-  };
+  }
 
   /**
    * Retrieves existing items.
    *
-   * @param {HttpRequest} req
    * @param projection
    * @param {boolean} showInactive
    * @returns {Promise<any>}
    */
-  getMany = (req: HttpRequest, projection: any, showInactive: boolean): Promise<any> => {
+  getMany(projection: any, showInactive: boolean): Promise<any> {
     const query = showInactive
       ? this.model.find({}, projection).lean()
       : this.model.find({ isActive: true }, projection).lean();
@@ -152,7 +151,7 @@ export class Mongooser<T extends BaseDocument> {
         };
       })
       .catch(getErrorResponse);
-  };
+  }
 
   /**
    * Inserts a new item.
@@ -160,7 +159,7 @@ export class Mongooser<T extends BaseDocument> {
    * @param {HttpRequest} req
    * @returns {Promise<any>}
    */
-  insertOne = (req: HttpRequest): Promise<any> => {
+  insertOne(req: HttpRequest): Promise<any> {
     const contentType = req.headers ? req.headers['content-type'] : undefined;
 
     if (!(contentType && contentType.indexOf('application/json') >= 0))
@@ -194,7 +193,7 @@ export class Mongooser<T extends BaseDocument> {
         };
       })
       .catch(getErrorResponse);
-  };
+  }
 
   /**
    * Updates (patches) an existing item.
@@ -203,7 +202,7 @@ export class Mongooser<T extends BaseDocument> {
    * @param id
    * @returns {Promise<any>}
    */
-  updateOne = (req: HttpRequest, id: any): Promise<any> => {
+  updateOne(req: HttpRequest, id: any): Promise<any> {
     const contentType = req.headers ? req.headers['content-type'] : undefined;
 
     if (!(contentType && contentType.indexOf('application/json') >= 0))
@@ -254,7 +253,7 @@ export class Mongooser<T extends BaseDocument> {
         }
       })
       .catch(getErrorResponse);
-  };
+  }
 
   /**
    * Deactivates an existing item.
@@ -262,7 +261,7 @@ export class Mongooser<T extends BaseDocument> {
    * @param id
    * @returns {Promise<any>}
    */
-  deactivateOne = (id: any): Promise<any> => {
+  deactivateOne(id: any): Promise<any> {
     if (!id)
       return Promise.resolve({
         status: HttpStatusCode.BadRequest,
@@ -287,5 +286,5 @@ export class Mongooser<T extends BaseDocument> {
           };
       })
       .catch(getErrorResponse);
-  };
+  }
 }
