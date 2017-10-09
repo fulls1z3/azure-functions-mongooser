@@ -125,7 +125,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(200);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body).toHaveProperty('object');
           expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
@@ -155,7 +155,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(200);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body).toHaveProperty('object');
           expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
@@ -186,7 +186,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(200);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body).toHaveProperty('object');
           expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
@@ -533,8 +533,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       };
 
       const mockRequest: HttpRequest = {
-        method: HttpMethod.Delete,
-        body: PATCH_VALUE
+        method: HttpMethod.Delete
       };
 
       mock(mockContext, mockRequest);
@@ -552,7 +551,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Delete,
-        body: PATCH_VALUE,
         params: {
           id: INVALID_ID
         }
