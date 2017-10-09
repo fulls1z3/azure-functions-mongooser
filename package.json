@@ -30,7 +30,7 @@
     "ci:after": "greenkeeper-lockfile-upload",
     "lint": "tslint -p ./tslint.json --force",
     "test": "jest --forceExit --coverage --colors",
-    "test:ci": "jest --ci --forceExit --coverage --colors",
+    "test:ci": "jest --ci --runInBand --forceExit --coverage --colors",
     "release": "standard-version"
   },
   "main": "./bundles/azure-functions-mongooser.umd.js",
