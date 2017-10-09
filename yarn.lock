@@ -221,9 +221,9 @@ aws4@^1.2.1, aws4@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.6.0.tgz#83ef5ca860b2b32e4a0deedee8c771b9db57471e"
 
-azure-functions-ts-essentials@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/azure-functions-ts-essentials/-/azure-functions-ts-essentials-1.1.1.tgz#c7bc40ac3572461775582a19bda6f64bb77e6a5f"
+azure-functions-ts-essentials@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/azure-functions-ts-essentials/-/azure-functions-ts-essentials-1.2.0.tgz#bad1a03e1f3168b0ce0e50b1f9299101a9f47721"
 
 babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
   version "6.26.0"
