@@ -39,12 +39,12 @@
   "typings": "./index.d.ts",
   "devDependencies": {
     "azure-functions-ts-essentials": "1.2.0",
-    "mongoose": "~4.12.1",
+    "mongoose": "~4.12.0",
     "typegoose": "~3.4.7",
     "@types/jest": "~21.1.2",
-    "@types/mongodb": "~2.2.13",
+    "@types/mongodb": "~2.2.12",
     "@types/mongoose": "~4.7.23",
-    "@types/node": "~8.0.33",
+    "@types/node": "~8.0.32",
     "rimraf": "~2.6.2",
     "ts-node": "~3.3.0",
     "glob": "~7.1.2",
@@ -56,7 +56,7 @@
     "rollup-plugin-uglify": "~2.0.1",
     "jest": "~21.2.1",
     "jest-junit-reporter": "~1.1.0",
-    "ts-jest": "~21.1.1",
+    "ts-jest": "~21.1.0",
     "standard-version": "~4.2.0",
     "tslint": "~5.7.0",
     "backend-tslint-rules": "1.0.0",
@@ -68,7 +68,6 @@
     "typegoose": ">=3.4.7"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "<rootDir>/tools/test/jest.setup.ts",
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
@@ -82,8 +81,7 @@
     ],
     "testResultsProcessor": "./node_modules/jest-junit-reporter",
     "cache": false,
-    "silent": true,
-    "collectCoverageFrom": ["src/**.ts"]
+    "silent": true
   },
   "greenkeeper": {
     "ignore": [
