@@ -53,7 +53,7 @@ const model = new MockItem().getModelForClass(MockItem, {
   }
 });
 
-export function mock(context: Context, req: HttpRequest): any {
+const mock = (context: Context, req: HttpRequest): any => {
   (mongoose as any).Promise = Promise;
 
   connect(mongoose, PRODUCTION_CONNSTRING)
@@ -76,7 +76,7 @@ export function mock(context: Context, req: HttpRequest): any {
 
           res = id
             ? mongooser.getOne(id)
-            : mongooser.getMany(req, projection, showInactive);
+            : mongooser.getMany(projection, showInactive);
           break;
         case HttpMethod.Post:
           res = mongooser.insertOne(req);
@@ -101,7 +101,7 @@ export function mock(context: Context, req: HttpRequest): any {
 
       res.then(r => context.done(undefined, r));
     });
-}
+};
 
 describe('@azure-seed/azure-functions-mongooser', () => {
   beforeAll(async () => {
