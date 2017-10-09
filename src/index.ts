@@ -95,25 +95,25 @@ export class Mongooser<T extends BaseDocument> {
     const query = this.model.findOne({ _id: id }).lean();
 
     return query.
-    then((doc: T) => {
-      if (!doc)
-        return Promise.resolve({
-          status: HttpStatusCode.NotFound
-        });
+      then((doc: T) => {
+        if (!doc)
+          return Promise.resolve({
+            status: HttpStatusCode.NotFound
+          });
 
-      const data: T = doc;
-      data._id = String(doc._id);
+        const data: T = doc;
+        data._id = String(doc._id);
 
-      return {
-        status: HttpStatusCode.OK,
-        body: {
-          _id: data._id,
-          object: this.objectName,
-          ...(data as any)
-        }
-      };
-    })
-    .catch(getErrorResponse);
+        return {
+          status: HttpStatusCode.OK,
+          body: {
+            _id: data._id,
+            object: this.objectName,
+            ...(data as any)
+          }
+        };
+      })
+      .catch(getErrorResponse);
   };
 
   /**
