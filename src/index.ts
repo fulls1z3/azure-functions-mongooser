@@ -4,9 +4,10 @@ import { HttpRequest, HttpStatusCode } from 'azure-functions-ts-essentials';
 
 // models
 import { BaseDocument } from './models/base-document';
+import { ErrorType } from './models/error-type';
 
 export { Activatable } from './models/activatable';
-export { BaseDocument };
+export { BaseDocument, ErrorType };
 
 /**
  * Establishes mongoose connection.
@@ -40,6 +41,27 @@ export function parseFields(rawFields: string): any {
     }, {});
 }
 
+const getErrorResponse = (err: any) => {
+  let status: HttpStatusCode | number = HttpStatusCode.InternalServerError;
+  let type: ErrorType | string = '';
+
+  if (err.name === 'MongoError' && err.code === 11000) {
+    status = HttpStatusCode.Conflict;
+    type = ErrorType.AlreadyExists;
+  } else if (err.name === 'ValidationError') {
+    status = HttpStatusCode.UnprocessableEntity;
+    type = ErrorType.MissingField;
+  }
+
+  return {
+    status,
+    body: {
+      type,
+      message: err.message
+    }
+  };
+};
+
 /**
  * Clears an existing collection using recursive retries.
  *
@@ -54,6 +76,9 @@ export function clearCollection(instance: mongoose.Mongoose, name: string): Prom
     .catch(() => clearCollection(instance, name));
 }
 
+/**
+ * The mongoose-based RESTful API implementation.
+ */
 export class Mongooser<T extends BaseDocument> {
   constructor(private readonly model: any,
               private readonly objectName: string,
@@ -70,29 +95,25 @@ export class Mongooser<T extends BaseDocument> {
     const query = this.model.findOne({ _id: id }).lean();
 
     return query.
-    then((doc: T) => {
-      if (!doc)
-        return Promise.resolve({
-          status: HttpStatusCode.NotFound,
-          body: {}
-        });
+      then((doc: T) => {
+        if (!doc)
+          return Promise.resolve({
+            status: HttpStatusCode.NotFound
+          });
 
-      const data: T = doc;
-      data._id = String(doc._id);
+        const data: T = doc;
+        data._id = String(doc._id);
 
-      return {
-        status: HttpStatusCode.OK,
-        body: {
-          _id: data._id,
-          object: this.objectName,
-          ...(data as any)
-        }
-      };
-    })
-    .catch((err: any) => ({
-      status: HttpStatusCode.InternalServerError,
-      body: err
-    }));
+        return {
+          status: HttpStatusCode.OK,
+          body: {
+            _id: data._id,
+            object: this.objectName,
+            ...(data as any)
+          }
+        };
+      })
+      .catch(getErrorResponse);
   };
 
   /**
@@ -132,10 +153,7 @@ export class Mongooser<T extends BaseDocument> {
           }
         };
       })
-      .catch((err: any) => ({
-        status: HttpStatusCode.InternalServerError,
-        body: err
-      }));
+      .catch(getErrorResponse);
   };
 
   /**
@@ -145,21 +163,31 @@ export class Mongooser<T extends BaseDocument> {
    * @returns {Promise<any>}
    */
   insertOne = (req: HttpRequest): Promise<any> => {
-    const item = JSON.parse(req.body || '{}');
+    const contentType = req.headers ? req.headers['content-type'] : undefined;
 
-    if (!Object.keys(item).length)
+    if (!(contentType && contentType.indexOf('application/json') >= 0))
       return Promise.resolve({
         status: HttpStatusCode.BadRequest,
-        body: {}
+        body: {
+          type: ErrorType.Invalid
+        }
       });
 
-    return this.model.insertMany(item)
+    if (!(req.body && Object.keys(req.body).length))
+      return Promise.resolve({
+        status: HttpStatusCode.BadRequest,
+        body: {
+          type: ErrorType.Invalid
+        }
+      });
+
+    return this.model.insertMany(req.body)
       .then((docs: any) => {
         const data: T = docs[0].toObject();
         data._id = String(docs[0]._id);
 
         return {
-          status: HttpStatusCode.OK,
+          status: HttpStatusCode.Created,
           body: {
             _id: data._id,
             object: this.objectName,
@@ -167,10 +195,7 @@ export class Mongooser<T extends BaseDocument> {
           }
         };
       })
-      .catch((err: any) => ({
-        status: HttpStatusCode.InternalServerError,
-        body: err
-      }));
+      .catch(getErrorResponse);
   };
 
   /**
@@ -181,26 +206,40 @@ export class Mongooser<T extends BaseDocument> {
    * @returns {Promise<any>}
    */
   updateOne = (req: HttpRequest, id: any): Promise<any> => {
-    const item = JSON.parse(req.body || '{}');
+    const contentType = req.headers ? req.headers['content-type'] : undefined;
 
-    if (!Object.keys(item).length)
+    if (!(contentType && contentType.indexOf('application/json') >= 0))
       return Promise.resolve({
         status: HttpStatusCode.BadRequest,
-        body: {}
+        body: {
+          type: ErrorType.Invalid
+        }
+      });
+
+    if (!(req.body && Object.keys(req.body).length))
+      return Promise.resolve({
+        status: HttpStatusCode.BadRequest,
+        body: {
+          type: ErrorType.Invalid
+        }
       });
 
     if (!id)
       return Promise.resolve({
         status: HttpStatusCode.BadRequest,
-        body: {}
+        body: {
+          type: ErrorType.Invalid
+        }
       });
 
-    return this.model.findOneAndUpdate({ _id: id }, item, { new: true }).lean()
+    return this.model.findOneAndUpdate({ _id: id }, req.body, { new: true }).lean()
       .then((doc: T) => {
         if (!doc)
           return {
             status: HttpStatusCode.BadRequest,
-            body: {}
+            body: {
+              type: ErrorType.Missing
+            }
           };
         else {
           const data: T = doc;
@@ -216,10 +255,7 @@ export class Mongooser<T extends BaseDocument> {
           };
         }
       })
-      .catch((err: any) => ({
-        status: HttpStatusCode.InternalServerError,
-        body: err
-      }));
+      .catch(getErrorResponse);
   };
 
   /**
@@ -232,15 +268,16 @@ export class Mongooser<T extends BaseDocument> {
     if (!id)
       return Promise.resolve({
         status: HttpStatusCode.BadRequest,
-        body: {}
+        body: {
+          type: ErrorType.Missing
+        }
       });
 
     return this.model.findOneAndUpdate({ _id: id }, { isActive: false }).lean()
       .then((doc: T) => {
         if (!doc)
           return {
-            status: HttpStatusCode.BadRequest,
-            body: {}
+            status: HttpStatusCode.BadRequest
           };
         else
           return {
@@ -251,9 +288,6 @@ export class Mongooser<T extends BaseDocument> {
             }
           };
       })
-      .catch((err: any) => ({
-        status: HttpStatusCode.InternalServerError,
-        body: err
-      }));
+      .catch(getErrorResponse);
   };
 }

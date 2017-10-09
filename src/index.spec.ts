@@ -59,14 +59,20 @@ export function mock(context: Context, req: HttpRequest): any {
   connect(mongoose, PRODUCTION_CONNSTRING)
     .then(() => {
       let res: Promise<HttpResponse>;
-      const id = req.params.id;
+      const id = req.params
+        ? req.params.id
+        : undefined;
 
       const mongooser = new Mongooser<MockItem>(model, OBJECT_NAME, '/api/v0/mock-items');
 
       switch (req.method) {
         case HttpMethod.Get:
-          const showInactive: boolean = req.query.showInactive;
-          const projection = parseFields(req.query.fields);
+          const showInactive: boolean = req.query
+            ? req.query.showInactive
+            : false;
+          const projection = parseFields(req.query
+            ? req.query.fields
+            : undefined);
 
           res = id
             ? mongooser.getOne(id)
@@ -119,31 +125,27 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(200);
-          expect(response.body).toHaveProperty('object');
-          expect(typeof(response.body.object)).toEqual('string');
-          expect(response.body).toHaveProperty('data');
-          expect(typeof(response.body.data)).toEqual('object');
-          expect(response.body.data.length).toEqual(1);
-          expect(response.body).toHaveProperty('url');
-          expect(typeof(response.body.url)).toEqual('string');
-          expect(response.body).toHaveProperty('hasMore');
-          expect(typeof(response.body.hasMore)).toEqual('boolean');
-          expect(response.body).toHaveProperty('totalCount');
-          expect(typeof(response.body.totalCount)).toEqual('number');
+          expect((response as HttpResponse).status).toEqual(200);
+          expect((response as HttpResponse).body).toHaveProperty('object');
+          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+          expect((response as HttpResponse).body.data.length).toEqual(1);
+          expect((response as HttpResponse).body).toHaveProperty('url');
+          expect(typeof((response as HttpResponse).body.url)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+          expect((response as HttpResponse).body).toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
 
-          TEST_ID = response.body.data[0]._id;
+          TEST_ID = (response as HttpResponse).body.data[0]._id;
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
-        method: HttpMethod.Get,
-        params: {},
-        query: {},
-        body: JSON.stringify({})
+        method: HttpMethod.Get
       };
 
       mock(mockContext, mockRequest);
@@ -153,31 +155,28 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(200);
-          expect(response.body).toHaveProperty('object');
-          expect(typeof(response.body.object)).toEqual('string');
-          expect(response.body).toHaveProperty('data');
-          expect(typeof(response.body.data)).toEqual('object');
-          expect(response.body.data.length).toEqual(2);
-          expect(response.body).toHaveProperty('url');
-          expect(typeof(response.body.url)).toEqual('string');
-          expect(response.body).toHaveProperty('hasMore');
-          expect(typeof(response.body.hasMore)).toEqual('boolean');
-          expect(response.body).toHaveProperty('totalCount');
-          expect(typeof(response.body.totalCount)).toEqual('number');
+          expect((response as HttpResponse).status).toEqual(200);
+          expect((response as HttpResponse).body).toHaveProperty('object');
+          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+          expect((response as HttpResponse).body.data.length).toEqual(2);
+          expect((response as HttpResponse).body).toHaveProperty('url');
+          expect(typeof((response as HttpResponse).body.url)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+          expect((response as HttpResponse).body).toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Get,
-        params: {},
         query: {
           showInactive: true
-        },
-        body: JSON.stringify({})
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -187,33 +186,30 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(200);
-          expect(response.body).toHaveProperty('object');
-          expect(typeof(response.body.object)).toEqual('string');
-          expect(response.body).toHaveProperty('data');
-          expect(typeof(response.body.data)).toEqual('object');
-          expect(response.body.data.length).toEqual(1);
-          expect(response.body).toHaveProperty('url');
-          expect(typeof(response.body.url)).toEqual('string');
-          expect(response.body).toHaveProperty('hasMore');
-          expect(typeof(response.body.hasMore)).toEqual('boolean');
-          expect(response.body).toHaveProperty('totalCount');
-          expect(typeof(response.body.totalCount)).toEqual('number');
+          expect((response as HttpResponse).status).toEqual(200);
+          expect((response as HttpResponse).body).toHaveProperty('object');
+          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+          expect((response as HttpResponse).body.data.length).toEqual(1);
+          expect((response as HttpResponse).body).toHaveProperty('url');
+          expect(typeof((response as HttpResponse).body.url)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+          expect((response as HttpResponse).body).toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
 
-          expect(response.body.data[0]).toHaveProperty('code');
+          expect((response as HttpResponse).body.data[0]).toHaveProperty('code');
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Get,
-        params: {},
         query: {
           fields: 'code'
-        },
-        body: JSON.stringify({})
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -225,28 +221,25 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.OK);
-          expect(response.body).toHaveProperty('_id');
-          expect(typeof(response.body._id)).toEqual('string');
-          expect(response.body).toHaveProperty('object');
-          expect(typeof(response.body.object)).toEqual('string');
-          expect(response.body).toHaveProperty('code');
-          expect(typeof(response.body.code)).toEqual('string');
-          expect(response.body).toHaveProperty('name');
-          expect(typeof(response.body.name)).toEqual('string');
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body).toHaveProperty('_id');
+          expect(typeof((response as HttpResponse).body._id)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('object');
+          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('code');
+          expect(typeof((response as HttpResponse).body.code)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('name');
+          expect(typeof((response as HttpResponse).body.name)).toEqual('string');
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Get,
         params: {
           id: TEST_ID
-        },
-        query: {},
-        body: JSON.stringify({})
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -256,24 +249,21 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.OK);
-          expect(response.body._id).toEqual(TEST_ID);
-          expect(response.body.object).toEqual(OBJECT_NAME);
-          expect(response.body.code).toEqual(INITIAL_ITEMS[0].code);
-          expect(response.body.name).toEqual(INITIAL_ITEMS[0].name);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
+          expect((response as HttpResponse).body.object).toEqual(OBJECT_NAME);
+          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
+          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Get,
         params: {
           id: TEST_ID
-        },
-        query: {},
-        body: JSON.stringify({})
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -283,20 +273,17 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.NotFound);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.NotFound);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Get,
         params: {
           id: INVALID_ID
-        },
-        query: {},
-        body: JSON.stringify({})
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -308,22 +295,37 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.OK);
-          expect(response.body).toHaveProperty('_id');
-          expect(response.body.object).toEqual(OBJECT_NAME);
-          expect(response.body.code).toEqual(POST_VALUE.code);
-          expect(response.body.name).toEqual(POST_VALUE.name);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.Created);
+          expect((response as HttpResponse).body).toHaveProperty('_id');
+          expect((response as HttpResponse).body.object).toEqual(OBJECT_NAME);
+          expect((response as HttpResponse).body.code).toEqual(POST_VALUE.code);
+          expect((response as HttpResponse).body.name).toEqual(POST_VALUE.name);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Post,
-        params: {},
-        query: {},
-        body: JSON.stringify(POST_VALUE)
+        headers: { 'content-type': 'application/json' },
+        body: POST_VALUE
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should fail with 400 w/o `content-type` header', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Post
       };
 
       mock(mockContext, mockRequest);
@@ -333,39 +335,56 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.BadRequest);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Post,
-        params: {},
-        query: {},
-        body: undefined
+        headers: { 'content-type': 'application/json' }
       };
 
       mock(mockContext, mockRequest);
     });
 
-    it('should fail with 500 w/o required properties', (done: () => void) => {
+    it('should fail with 409 on idempotent request', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.InternalServerError);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.Conflict);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Post,
-        params: {},
-        query: {},
-        body: JSON.stringify(INVALID_VALUE)
+        headers: { 'content-type': 'application/json' },
+        body: {
+          _id: TEST_ID,
+          ...POST_VALUE
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should fail with 422 w/o required properties', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.UnprocessableEntity);
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Post,
+        headers: { 'content-type': 'application/json' },
+        body: INVALID_VALUE
       };
 
       mock(mockContext, mockRequest);
@@ -377,24 +396,41 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.OK);
-          expect(response.body._id).toEqual(TEST_ID);
-          expect(response.body.object).toEqual(OBJECT_NAME);
-          expect(response.body.code).toEqual(PATCH_VALUE.code);
-          expect(response.body.name).toEqual(INITIAL_ITEMS[0].name);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
+          expect((response as HttpResponse).body.object).toEqual(OBJECT_NAME);
+          expect((response as HttpResponse).body.code).toEqual(PATCH_VALUE.code);
+          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Patch,
+        headers: { 'content-type': 'application/json' },
+        body: PATCH_VALUE,
         params: {
           id: TEST_ID
-        },
-        query: {},
-        body: JSON.stringify(PATCH_VALUE)
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should fail with 400 w/o `content-type` header', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Patch,
+        body: PATCH_VALUE
       };
 
       mock(mockContext, mockRequest);
@@ -404,18 +440,16 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.BadRequest);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Patch,
-        params: {},
-        query: {},
-        body: JSON.stringify(PATCH_VALUE)
+        headers: { 'content-type': 'application/json' },
+        body: PATCH_VALUE
       };
 
       mock(mockContext, mockRequest);
@@ -425,20 +459,19 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.BadRequest);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Patch,
+        headers: { 'content-type': 'application/json' },
+        body: PATCH_VALUE,
         params: {
           id: INVALID_ID
-        },
-        query: {},
-        body: JSON.stringify(PATCH_VALUE)
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -448,20 +481,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.BadRequest);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Patch,
+        headers: { 'content-type': 'application/json' },
         params: {
           id: INVALID_ID
-        },
-        query: {},
-        body: undefined
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -473,22 +504,19 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.OK);
-          expect(response.body.deactivated).toBeTruthy();
-          expect(response.body._id).toEqual(TEST_ID);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body.deactivated).toBeTruthy();
+          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Delete,
         params: {
           id: TEST_ID
-        },
-        query: {},
-        body: JSON.stringify({})
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -498,18 +526,15 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.BadRequest);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Delete,
-        params: {},
-        query: {},
-        body: JSON.stringify(PATCH_VALUE)
+        body: PATCH_VALUE
       };
 
       mock(mockContext, mockRequest);
@@ -519,20 +544,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.BadRequest);
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Delete,
+        body: PATCH_VALUE,
         params: {
           id: INVALID_ID
-        },
-        query: {},
-        body: JSON.stringify(PATCH_VALUE)
+        }
       };
 
       mock(mockContext, mockRequest);
@@ -544,8 +567,8 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
-          expect(response.status).toEqual(HttpStatusCode.MethodNotAllowed);
-          expect(response.body).toEqual({
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.MethodNotAllowed);
+          expect((response as HttpResponse).body).toEqual({
             error: {
               type: 'not_supported',
               message: 'Method XYZ not supported.'
@@ -553,18 +576,25 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           });
 
           done();
-        },
-        log: () => {/**/}
+        }
       };
 
       const mockRequest: HttpRequest = {
-        method: 'XYZ' as HttpMethod,
-        params: {},
-        query: {},
-        body: JSON.stringify({})
+        method: 'XYZ' as HttpMethod
       };
 
       mock(mockContext, mockRequest);
+    });
+  });
+
+  describe('connect', () => {
+    it('should fail w/incorrect connection strings', async () => {
+      (mongoose as any).Promise = Promise;
+
+      connect(mongoose, '')
+        .catch(err => {
+          expect(err.toString()).toContain('Invalid mongodb uri.');
+        });
     });
   });
 });
