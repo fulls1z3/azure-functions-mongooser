@@ -63,7 +63,7 @@ export function mock(context: Context, req: HttpRequest): any {
         ? req.params.id
         : undefined;
 
-      const mongooser = new Mongooser<MockItem>(model, OBJECT_NAME, '/api/v0/mock-items');
+      const mongooser = new Mongooser<MockItem>(model, OBJECT_NAME);
 
       switch (req.method) {
         case HttpMethod.Get:
@@ -131,8 +131,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body).toHaveProperty('url');
-          expect(typeof((response as HttpResponse).body.url)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('hasMore');
           expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
           expect((response as HttpResponse).body).toHaveProperty('totalCount');
@@ -161,8 +159,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(2);
-          expect((response as HttpResponse).body).toHaveProperty('url');
-          expect(typeof((response as HttpResponse).body.url)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('hasMore');
           expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
           expect((response as HttpResponse).body).toHaveProperty('totalCount');
@@ -192,8 +188,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body).toHaveProperty('url');
-          expect(typeof((response as HttpResponse).body.url)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('hasMore');
           expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
           expect((response as HttpResponse).body).toHaveProperty('totalCount');
