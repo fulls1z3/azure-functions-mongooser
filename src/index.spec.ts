@@ -104,14 +104,6 @@ export function mock(context: Context, req: HttpRequest): any {
 }
 
 describe('@azure-seed/azure-functions-mongooser', () => {
-  beforeAll(async () => {
-    (mongoose as any).Promise = Promise;
-
-    await connect(mongoose, PRODUCTION_CONNSTRING);
-    await clearCollection(mongoose, OBJECT_NAME);
-    await model.insertMany(INITIAL_ITEMS);
-  });
-
   afterAll(async () => {
     (mongoose as any).Promise = Promise;
 
