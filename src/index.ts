@@ -81,8 +81,7 @@ export function clearCollection(instance: mongoose.Mongoose, name: string): Prom
  */
 export class Mongooser<T extends BaseDocument> {
   constructor(private readonly model: any,
-              private readonly objectName: string,
-              private readonly url: string) {
+              private readonly objectName: string) {
   }
 
   /**
@@ -147,7 +146,6 @@ export class Mongooser<T extends BaseDocument> {
           body: {
             object: 'list',
             data,
-            url: this.url,
             hasMore: false,
             totalCount: data.length
           }
