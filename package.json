@@ -39,12 +39,12 @@
   "typings": "./index.d.ts",
   "devDependencies": {
     "azure-functions-ts-essentials": "1.2.0",
-    "mongoose": "~4.12.0",
+    "mongoose": "4.12.0",
     "typegoose": "~3.4.7",
     "@types/jest": "~21.1.2",
-    "@types/mongodb": "~2.2.12",
+    "@types/mongodb": "~2.2.13",
     "@types/mongoose": "~4.7.23",
-    "@types/node": "~8.0.32",
+    "@types/node": "~8.0.33",
     "rimraf": "~2.6.2",
     "ts-node": "~3.3.0",
     "glob": "~7.1.2",
@@ -56,7 +56,7 @@
     "rollup-plugin-uglify": "~2.0.1",
     "jest": "~21.2.1",
     "jest-junit-reporter": "~1.1.0",
-    "ts-jest": "~21.1.0",
+    "ts-jest": "~21.1.1",
     "standard-version": "~4.2.0",
     "tslint": "~5.7.0",
     "backend-tslint-rules": "1.0.0",
@@ -64,7 +64,7 @@
   },
   "peerDependencies": {
     "azure-functions-ts-essentials": ">=1.2.0",
-    "mongoose": ">=4.12.0",
+    "mongoose": "4.12.0",
     "typegoose": ">=3.4.7"
   },
   "jest": {
@@ -85,6 +85,7 @@
   },
   "greenkeeper": {
     "ignore": [
+      "mongoose",
       "rollup"
     ]
   }
