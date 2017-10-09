@@ -68,6 +68,7 @@
     "typegoose": ">=3.4.7"
   },
   "jest": {
+    "setupTestFrameworkScriptFile": "<rootDir>/tools/test/jest.setup.ts",
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
