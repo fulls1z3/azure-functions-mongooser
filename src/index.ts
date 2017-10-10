@@ -108,7 +108,7 @@ export class Mongooser<T extends BaseDocument> {
           body: {
             _id: data._id,
             object: this.objectName,
-            ...(data as any)
+            ...JSON.parse(JSON.stringify(data))
           }
         };
       })
@@ -136,7 +136,7 @@ export class Mongooser<T extends BaseDocument> {
           data.push({
             _id: item._id,
             object: this.objectName,
-            ...(item as any)
+            ...JSON.parse(JSON.stringify(item))
           });
         }
 
@@ -188,7 +188,7 @@ export class Mongooser<T extends BaseDocument> {
           body: {
             _id: data._id,
             object: this.objectName,
-            ...(data as any)
+            ...JSON.parse(JSON.stringify(data))
           }
         };
       })
@@ -247,7 +247,7 @@ export class Mongooser<T extends BaseDocument> {
             body: {
               _id: data._id,
               object: this.objectName,
-              ...(data as any)
+              ...JSON.parse(JSON.stringify(data))
             }
           };
         }
