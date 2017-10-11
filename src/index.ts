@@ -187,7 +187,6 @@ export class Mongooser<T extends BaseDocument> {
         return {
           status: HttpStatusCode.OK,
           body: {
-            object: 'list',
             data,
             hasMore: false,
             totalCount: data.length
@@ -198,12 +197,12 @@ export class Mongooser<T extends BaseDocument> {
   }
 
   /**
-   * Inserts a new item.
+   * Inserts new items.
    *
    * @param {HttpRequest} req
    * @returns {Promise<any>}
    */
-  insertOne(req: HttpRequest): Promise<any> {
+  insertMany(req: HttpRequest): Promise<any> {
     const contentType = req.headers ? req.headers['content-type'] : undefined;
 
     if (!(contentType && contentType.indexOf('application/json') >= 0))
@@ -224,14 +223,22 @@ export class Mongooser<T extends BaseDocument> {
 
     return this.model.insertMany(req.body)
       .then((docs: any) => {
-        const data: T = docs[0].toObject();
-        data._id = String(docs[0]._id);
+        const data: Array<T> = [];
+
+        for (const item of docs as Array<T>) {
+          item._id = String(item._id);
+          data.push({
+            _id: item._id,
+            ...JSON.parse(JSON.stringify(item))
+          });
+        }
 
         return {
           status: HttpStatusCode.Created,
           body: {
-            _id: data._id,
-            ...JSON.parse(JSON.stringify(data))
+            data,
+            hasMore: false,
+            totalCount: data.length
           }
         };
       })
