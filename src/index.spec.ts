@@ -130,7 +130,7 @@ const mock = (context: Context, req: HttpRequest): any => {
       let res: Promise<HttpResponse>;
       const id = _.get(req.params, 'id');
 
-      const mongooser = new Mongooser<MockItem>(mockItemModel, MOCK_ITEM);
+      const mongooser = new Mongooser<MockItem>(mockItemModel);
 
       switch (req.method) {
         case HttpMethod.Get:
@@ -143,7 +143,7 @@ const mock = (context: Context, req: HttpRequest): any => {
             : mongooser.getMany(projection, showInactive, population);
           break;
         case HttpMethod.Post:
-          res = mongooser.insertOne(req);
+          res = mongooser.insertMany(req);
           break;
         case HttpMethod.Patch:
           res = mongooser.updateOne(req, id);
@@ -508,14 +508,22 @@ describe('@azure-seed/azure-functions-mongooser', () => {
   });
 
   describe('POST /api/v0/mock-items', () => {
-    it('should be able to create a new item', (done: () => void) => {
+    it('should be able to create new items', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.Created);
-          expect((response as HttpResponse).body).toHaveProperty('_id');
-          expect((response as HttpResponse).body.code).toEqual(POST_VALUE.code);
-          expect((response as HttpResponse).body.name).toEqual(POST_VALUE.name);
+          expect((response as HttpResponse).body).toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+          expect((response as HttpResponse).body.data.length).toEqual(1);
+          expect((response as HttpResponse).body.data[0]).toHaveProperty('_id');
+          expect((response as HttpResponse).body.data[0].code).toEqual(POST_VALUE.code);
+          expect((response as HttpResponse).body.data[0].name).toEqual(POST_VALUE.name);
+          expect((response as HttpResponse).body).toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+          expect((response as HttpResponse).body.hasMore).toBeFalsy();
+          expect((response as HttpResponse).body).toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
 
           done();
         }
