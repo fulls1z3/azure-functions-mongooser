@@ -15,6 +15,8 @@ import { copyResources } from './copy-resources';
 const packageName = 'azure-functions-mongooser';
 const compilationFolder = root('.temp');
 const globals = {
+  lodash: '_',
+  'lodash/index': '_',
   mongoose: 'mongoose',
   typegoose: 'typegoose',
   'azure-functions-ts-essentials': '_azureFunctionsTsEssentials'
