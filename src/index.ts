@@ -121,8 +121,7 @@ export function clearCollection(instance: mongoose.Mongoose, name: string): Prom
  * The mongoose-based RESTful API implementation.
  */
 export class Mongooser<T extends BaseDocument> {
-  constructor(private readonly model: any,
-              private readonly objectName: string) {
+  constructor(private readonly model: any) {
   }
 
   /**
@@ -151,7 +150,6 @@ export class Mongooser<T extends BaseDocument> {
         status: HttpStatusCode.OK,
         body: {
           _id: data._id,
-          object: this.objectName,
           ...JSON.parse(JSON.stringify(data))
         }
       };
@@ -182,7 +180,6 @@ export class Mongooser<T extends BaseDocument> {
           item._id = String(item._id);
           data.push({
             _id: item._id,
-            object: this.objectName,
             ...JSON.parse(JSON.stringify(item))
           });
         }
@@ -234,7 +231,6 @@ export class Mongooser<T extends BaseDocument> {
           status: HttpStatusCode.Created,
           body: {
             _id: data._id,
-            object: this.objectName,
             ...JSON.parse(JSON.stringify(data))
           }
         };
@@ -293,7 +289,6 @@ export class Mongooser<T extends BaseDocument> {
             status: HttpStatusCode.OK,
             body: {
               _id: data._id,
-              object: this.objectName,
               ...JSON.parse(JSON.stringify(data))
             }
           };
