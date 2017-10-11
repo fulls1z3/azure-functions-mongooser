@@ -41,7 +41,7 @@
     "lodash": "~4.17.4",
     "azure-functions-ts-essentials": "1.2.0",
     "mongoose": "4.12.0",
-    "typegoose": "~3.4.7",
+    "typegoose": "3.4.7",
     "@types/jest": "~21.1.2",
     "@types/lodash": "4.14.55",
     "@types/mongodb": "~2.2.13",
