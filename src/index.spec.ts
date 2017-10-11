@@ -211,8 +211,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         done: (err, response) => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('object');
-          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(1);
@@ -239,8 +237,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         done: (err, response) => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('object');
-          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(2);
@@ -268,8 +264,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         done: (err, response) => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('object');
-          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(1);
@@ -299,8 +293,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         done: (err, response) => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('object');
-          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(1);
@@ -330,8 +322,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         done: (err, response) => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('object');
-          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('data');
           expect(typeof((response as HttpResponse).body.data)).toEqual('object');
           expect((response as HttpResponse).body.data.length).toEqual(1);
@@ -369,8 +359,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body).toHaveProperty('_id');
           expect(typeof((response as HttpResponse).body._id)).toEqual('string');
-          expect((response as HttpResponse).body).toHaveProperty('object');
-          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('code');
           expect(typeof((response as HttpResponse).body.code)).toEqual('string');
           expect((response as HttpResponse).body).toHaveProperty('name');
@@ -396,7 +384,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
           expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
@@ -420,7 +407,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
 
           done();
@@ -446,7 +432,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
           expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
@@ -475,7 +460,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
           expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
@@ -530,7 +514,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.Created);
           expect((response as HttpResponse).body).toHaveProperty('_id');
-          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(POST_VALUE.code);
           expect((response as HttpResponse).body.name).toEqual(POST_VALUE.name);
 
@@ -631,7 +614,6 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(PATCH_VALUE.code);
           expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
