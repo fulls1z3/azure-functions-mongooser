@@ -1,4 +1,5 @@
 // libs
+import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
 import { HttpRequest, HttpStatusCode } from 'azure-functions-ts-essentials';
 
@@ -17,7 +18,7 @@ export { BaseDocument, ErrorType };
  */
 export function connect(instance: mongoose.Mongoose, connStr: string): Promise<any> {
   return new Promise((resolve, reject) =>
-    instance.connect(connStr, { useMongoClient: true }, (err: any) => err
+    instance.connect(connStr, {useMongoClient: true}, (err: any) => err
       ? reject(err)
       : resolve()));
 }
@@ -26,7 +27,7 @@ export function connect(instance: mongoose.Mongoose, connStr: string): Promise<a
  * Parses comma separated string field names into mongodb projection object.
  *
  * @param {string} rawFields
- * @returns {{}}
+ * @returns {any}
  */
 export function parseFields(rawFields: string): any {
   if (!rawFields)
@@ -40,6 +41,46 @@ export function parseFields(rawFields: string): any {
       return acc;
     }, {});
 }
+
+/**
+ * Parses comma separated string populate names into mongodb population object.
+ *
+ * @param {string} rawPopulation
+ * @returns {any}
+ */
+export function parsePopulation(rawPopulation: string): any {
+  if (!rawPopulation)
+    return '';
+
+  let obj = {};
+
+  for (const item of rawPopulation.split(','))
+    obj = appendObject(obj, item);
+
+  return toPopulation(obj);
+}
+
+const appendObject = (obj: any, path: string) => {
+  const keys: Array<any> = path.split(':');
+  const lastKey = keys.pop();
+  const lastObj = keys.reduce((acc, cur) => acc[cur] = acc[cur] || {}, obj);
+
+  lastObj[lastKey] = 'path';
+
+  return obj;
+};
+
+const toPopulation = (obj: any) => {
+  return _.transform(obj, (res: Array<any>, value: Array<any>, key: string) => {
+    if (typeof(value) === 'object')
+      res.push({
+        path: key,
+        populate: toPopulation(value)
+      });
+    else
+      res.push({path: key});
+  }, []);
+};
 
 const getErrorResponse = (err: any) => {
   let status: HttpStatusCode | number = HttpStatusCode.InternalServerError;
@@ -88,30 +129,33 @@ export class Mongooser<T extends BaseDocument> {
    * Retrieves an existing item by id.
    *
    * @param id
+   * @param projection
+   * @param {"mongoose".ModelPopulateOptions | Array<"mongoose".ModelPopulateOptions>} population
    * @returns {Promise<any>}
    */
-  getOne(id: any): Promise<any> {
-    const query = this.model.findOne({ _id: id }).lean();
+  getOne(id: any,
+         projection?: any,
+         population?: mongoose.ModelPopulateOptions | Array<mongoose.ModelPopulateOptions>): Promise<any> {
+    const query = this.model.findOne({_id: id}, projection).populate(population).lean();
 
-    return query.
-      then((doc: T) => {
-        if (!doc)
-          return Promise.resolve({
-            status: HttpStatusCode.NotFound
-          });
+    return query.then((doc: T) => {
+      if (!doc)
+        return Promise.resolve({
+          status: HttpStatusCode.NotFound
+        });
 
-        const data: T = doc;
-        data._id = String(doc._id);
+      const data: T = doc;
+      data._id = String(doc._id);
 
-        return {
-          status: HttpStatusCode.OK,
-          body: {
-            _id: data._id,
-            object: this.objectName,
-            ...JSON.parse(JSON.stringify(data))
-          }
-        };
-      })
+      return {
+        status: HttpStatusCode.OK,
+        body: {
+          _id: data._id,
+          object: this.objectName,
+          ...JSON.parse(JSON.stringify(data))
+        }
+      };
+    })
       .catch(getErrorResponse);
   }
 
@@ -120,12 +164,15 @@ export class Mongooser<T extends BaseDocument> {
    *
    * @param projection
    * @param {boolean} showInactive
+   * @param {"mongoose".ModelPopulateOptions | Array<"mongoose".ModelPopulateOptions>} population
    * @returns {Promise<any>}
    */
-  getMany(projection: any, showInactive: boolean): Promise<any> {
-    const query = showInactive
-      ? this.model.find({}, projection).lean()
-      : this.model.find({ isActive: true }, projection).lean();
+  getMany(projection?: any,
+          showInactive = false,
+          population?: mongoose.ModelPopulateOptions | Array<mongoose.ModelPopulateOptions>): Promise<any> {
+    const query = this.model.find(!showInactive
+      ? {isActive: true}
+      : {}, projection).populate(population).lean();
 
     return query
       .then((docs: any) => {
@@ -229,7 +276,7 @@ export class Mongooser<T extends BaseDocument> {
         }
       });
 
-    return this.model.findOneAndUpdate({ _id: id }, req.body, { new: true }).lean()
+    return this.model.findOneAndUpdate({_id: id}, req.body, {new: true}).lean()
       .then((doc: T) => {
         if (!doc)
           return {
@@ -270,7 +317,7 @@ export class Mongooser<T extends BaseDocument> {
         }
       });
 
-    return this.model.findOneAndUpdate({ _id: id }, { isActive: false }).lean()
+    return this.model.findOneAndUpdate({_id: id}, {isActive: false}).lean()
       .then((doc: T) => {
         if (!doc)
           return {

@@ -1,40 +1,88 @@
 // libs
+import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
-import { prop } from 'typegoose';
+import { prop, Ref } from 'typegoose';
 import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from 'azure-functions-ts-essentials';
 
 // module
 import { Activatable } from './models/activatable';
 import { BaseDocument } from './models/base-document';
-import { clearCollection, connect, Mongooser, parseFields } from './index';
+import { clearCollection, connect, Mongooser, parseFields, parsePopulation } from './index';
 
-const PRODUCTION_CONNSTRING = 'mongodb://localhost:27017/test_collection';
-const OBJECT_NAME = 'mockItem';
+const CONNSTRING = 'mongodb://localhost:27017/test_collection';
+const MOCK_ITEM = 'mockItem';
+const MOCK_CHILD_ITEM = 'mockChildItem';
+const MOCK_WRATHCHILD_ITEM = 'mockWrathchildItem';
+const MOCK_LEAF_ITEM = 'mockLeafItem';
 
 let TEST_ID: string;
 const INITIAL_ITEMS = [
   {
     code: 'CODE',
-    name: 'name'
+    name: 'name',
+    child: undefined,
+    wrathchild: undefined
   },
   {
     code: 'ANOTHER CODE',
     name: 'another name',
+    child: undefined,
+    wrathchild: undefined,
     isActive: false
   }
 ];
 const POST_VALUE = {
   code: 'NEW CODE',
-  name: 'new name'
+  name: 'new name',
+  child: undefined,
+  wrathchild: undefined
 };
 const PATCH_VALUE = {
   code: 'SOME CODE'
+};
+
+const INITIAL_CHILD = {
+  name: 'name',
+  wrathchild1: undefined,
+  wrathchild2: undefined
+};
+const INITIAL_WRATHCHILD = {
+  name: 'name',
+  leaf: undefined
+};
+const INITIAL_LEAF = {
+  name: 'name',
+  bananas: 1
 };
 
 const INVALID_ID = '13a25b2ec826e1264865415a';
 const INVALID_VALUE = {
   invalid: true
 };
+
+class MockLeafItem extends BaseDocument {
+  @prop()
+  bananas: number;
+}
+
+class MockWrathchildItem extends BaseDocument {
+  @prop()
+  name?: string;
+
+  @prop({ ref: MockLeafItem })
+  leaf?: Ref<MockLeafItem>;
+}
+
+class MockChildItem extends BaseDocument {
+  @prop()
+  name?: string;
+
+  @prop({ ref: MockWrathchildItem })
+  wrathchild1?: Ref<MockWrathchildItem>;
+
+  @prop({ ref: MockWrathchildItem })
+  wrathchild2?: Ref<MockWrathchildItem>;
+}
 
 class MockItem extends BaseDocument implements Activatable {
   @prop({ index: true, unique: true, required: true })
@@ -43,40 +91,56 @@ class MockItem extends BaseDocument implements Activatable {
   @prop({ index: true })
   name?: string;
 
+  @prop({ ref: MockChildItem })
+  child?: Ref<MockChildItem>;
+
+  @prop({ ref: MockWrathchildItem })
+  wrathchild?: Ref<MockWrathchildItem>;
+
   @prop({ default: true })
   isActive: boolean;
 }
 
-const model = new MockItem().getModelForClass(MockItem, {
+const mockItemModel = new MockItem().getModelForClass(MockItem, {
   schemaOptions: {
-    collection: OBJECT_NAME
+    collection: MOCK_ITEM
+  }
+});
+const mockChildModel = new MockChildItem().getModelForClass(MockChildItem, {
+  schemaOptions: {
+    collection: MOCK_CHILD_ITEM
+  }
+});
+const mockWrathchildModel = new MockWrathchildItem().getModelForClass(MockWrathchildItem, {
+  schemaOptions: {
+    collection: MOCK_WRATHCHILD_ITEM
+  }
+});
+const mockLeafModel = new MockLeafItem().getModelForClass(MockLeafItem, {
+  schemaOptions: {
+    collection: MOCK_LEAF_ITEM
   }
 });
 
 const mock = (context: Context, req: HttpRequest): any => {
   (mongoose as any).Promise = Promise;
 
-  connect(mongoose, PRODUCTION_CONNSTRING)
+  connect(mongoose, CONNSTRING)
     .then(() => {
       let res: Promise<HttpResponse>;
-      const id = req.params
-        ? req.params.id
-        : undefined;
+      const id = _.get(req.params, 'id');
 
-      const mongooser = new Mongooser<MockItem>(model, OBJECT_NAME);
+      const mongooser = new Mongooser<MockItem>(mockItemModel, MOCK_ITEM);
 
       switch (req.method) {
         case HttpMethod.Get:
-          const showInactive: boolean = req.query
-            ? req.query.showInactive
-            : false;
-          const projection = parseFields(req.query
-            ? req.query.fields
-            : undefined);
+          const showInactive = _.get(req.query, 'showInactive', false);
+          const projection = parseFields(_.get(req.query, 'fields'));
+          const population = parsePopulation(_.get(req.query, 'populate'));
 
           res = id
-            ? mongooser.getOne(id)
-            : mongooser.getMany(projection, showInactive);
+            ? mongooser.getOne(id, projection, population)
+            : mongooser.getMany(projection, showInactive, population);
           break;
         case HttpMethod.Post:
           res = mongooser.insertOne(req);
@@ -107,16 +171,37 @@ describe('@azure-seed/azure-functions-mongooser', () => {
   beforeAll(async () => {
     (mongoose as any).Promise = Promise;
 
-    await connect(mongoose, PRODUCTION_CONNSTRING);
-    await clearCollection(mongoose, OBJECT_NAME);
-    await model.insertMany(INITIAL_ITEMS);
+    await connect(mongoose, CONNSTRING);
+
+    const leaves = await mockLeafModel.insertMany(INITIAL_LEAF);
+    INITIAL_WRATHCHILD.leaf = leaves[0].id;
+
+    const wrathchildren = await mockWrathchildModel.insertMany(INITIAL_WRATHCHILD);
+    const wrathchildId = wrathchildren[0]._id;
+    INITIAL_CHILD.wrathchild1 = wrathchildren[0]._id;
+    INITIAL_CHILD.wrathchild2 = wrathchildren[0]._id;
+
+    const children = await mockChildModel.insertMany(INITIAL_CHILD);
+    const childId = children[0]._id;
+    INITIAL_ITEMS[0].child = childId;
+    INITIAL_ITEMS[0].wrathchild = wrathchildId;
+    INITIAL_ITEMS[1].child = childId;
+    INITIAL_ITEMS[1].wrathchild = wrathchildId;
+    POST_VALUE.child = childId;
+    POST_VALUE.wrathchild = wrathchildId;
+
+    await mockItemModel.insertMany(INITIAL_ITEMS);
   });
 
   afterAll(async () => {
     (mongoose as any).Promise = Promise;
 
-    await connect(mongoose, PRODUCTION_CONNSTRING);
-    await clearCollection(mongoose, OBJECT_NAME);
+    await connect(mongoose, CONNSTRING);
+    await clearCollection(mongoose, MOCK_LEAF_ITEM);
+    await clearCollection(mongoose, MOCK_WRATHCHILD_ITEM);
+    await clearCollection(mongoose, MOCK_CHILD_ITEM);
+    await clearCollection(mongoose, MOCK_ITEM);
+
     await mongoose.connection.close();
   });
 
@@ -208,6 +293,72 @@ describe('@azure-seed/azure-functions-mongooser', () => {
 
       mock(mockContext, mockRequest);
     });
+
+    it('should be able to return populated fields', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body).toHaveProperty('object');
+          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+          expect((response as HttpResponse).body.data.length).toEqual(1);
+          expect((response as HttpResponse).body).toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+          expect((response as HttpResponse).body).toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+          expect((response as HttpResponse).body.data[0].child).toHaveProperty('name');
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Get,
+        query: {
+          populate: 'child'
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should be able to return populated fields (deep)', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body).toHaveProperty('object');
+          expect(typeof((response as HttpResponse).body.object)).toEqual('string');
+          expect((response as HttpResponse).body).toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+          expect((response as HttpResponse).body.data.length).toEqual(1);
+          expect((response as HttpResponse).body).toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+          expect((response as HttpResponse).body).toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+          expect((response as HttpResponse).body.data[0].child).toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].wrathchild).toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].child.wrathchild1).toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].child.wrathchild2).toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].child.wrathchild2.leaf).toHaveProperty('bananas');
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Get,
+        query: {
+          populate: 'wrathchild,child:wrathchild1,child:wrathchild2:leaf'
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
   });
 
   describe('GET /api/v0/mock-items/:id', () => {
@@ -245,7 +396,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.object).toEqual(OBJECT_NAME);
+          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
           expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
@@ -255,6 +406,94 @@ describe('@azure-seed/azure-functions-mongooser', () => {
 
       const mockRequest: HttpRequest = {
         method: HttpMethod.Get,
+        params: {
+          id: TEST_ID
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should be able to return an item w/projected fields', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
+          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
+          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Get,
+        query: {
+          fields: 'code'
+        },
+        params: {
+          id: TEST_ID
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should be able to return an item w/populated fields', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
+          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
+          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
+          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
+
+          expect((response as HttpResponse).body.child).toHaveProperty('name');
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Get,
+        query: {
+          populate: 'child'
+        },
+        params: {
+          id: TEST_ID
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should be able to return an item w/populated fields (deep)', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
+          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
+          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
+          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
+
+          expect((response as HttpResponse).body.child).toHaveProperty('name');
+          expect((response as HttpResponse).body.wrathchild).toHaveProperty('name');
+          expect((response as HttpResponse).body.child.wrathchild1).toHaveProperty('name');
+          expect((response as HttpResponse).body.child.wrathchild2).toHaveProperty('name');
+          expect((response as HttpResponse).body.child.wrathchild2.leaf).toHaveProperty('bananas');
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Get,
+        query: {
+          populate: 'wrathchild,child:wrathchild1,child:wrathchild2:leaf'
+        },
         params: {
           id: TEST_ID
         }
@@ -291,7 +530,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.Created);
           expect((response as HttpResponse).body).toHaveProperty('_id');
-          expect((response as HttpResponse).body.object).toEqual(OBJECT_NAME);
+          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(POST_VALUE.code);
           expect((response as HttpResponse).body.name).toEqual(POST_VALUE.name);
 
@@ -392,7 +631,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           expect(err).toBeUndefined();
           expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
           expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.object).toEqual(OBJECT_NAME);
+          expect((response as HttpResponse).body.object).toEqual(MOCK_ITEM);
           expect((response as HttpResponse).body.code).toEqual(PATCH_VALUE.code);
           expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
 
