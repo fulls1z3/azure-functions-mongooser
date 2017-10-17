@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.5.0"></a>
+# [1.5.0](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.4.0...v1.5.0) (2017-10-17)
+
+
+### Bug Fixes
+
+* **afm:** add limit to recursive connection retries ([#25](https://github.com/azure-seed/azure-functions-mongooser/issues/25)) ([12ee51d](https://github.com/azure-seed/azure-functions-mongooser/commit/12ee51d))
+* **afm:** reconnect after first failure ([#23](https://github.com/azure-seed/azure-functions-mongooser/issues/23)) ([88885e5](https://github.com/azure-seed/azure-functions-mongooser/commit/88885e5)), closes [#22](https://github.com/azure-seed/azure-functions-mongooser/issues/22)
+
+
+### Features
+
+* **afm:** import error type from ts-essentials ([#24](https://github.com/azure-seed/azure-functions-mongooser/issues/24)) ([a7799f3](https://github.com/azure-seed/azure-functions-mongooser/commit/a7799f3))
+
+
+
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.3.0...v1.4.0) (2017-10-11)
 
