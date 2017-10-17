@@ -18,7 +18,7 @@ export { BaseDocument };
  * @param {number} retry
  * @returns {Promise<any>}
  */
-export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 1000, retry = 0): Promise<any> {
+export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 250, retry = 0): Promise<any> {
   return new Promise((resolve, reject) =>
     instance.connect(connStr, {useMongoClient: true}, (err: any) => err
       ? retry < 100
