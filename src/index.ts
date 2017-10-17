@@ -1,14 +1,13 @@
 // libs
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
-import { HttpRequest, HttpStatusCode } from 'azure-functions-ts-essentials';
+import { ErrorType, HttpRequest, HttpStatusCode } from 'azure-functions-ts-essentials';
 
 // models
 import { BaseDocument } from './models/base-document';
-import { ErrorType } from './models/error-type';
 
 export { Activatable } from './models/activatable';
-export { BaseDocument, ErrorType };
+export { BaseDocument };
 
 /**
  * Establishes mongoose connection.
