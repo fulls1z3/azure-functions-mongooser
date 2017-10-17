@@ -22,7 +22,7 @@ export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 
   return new Promise((resolve, reject) =>
     instance.connect(connStr, {useMongoClient: true}, (err: any) => err
       ? retry < 100
-        ? setTimeout(() => connect(instance, connStr), timeout)
+        ? setTimeout(() => resolve(connect(instance, connStr)), timeout)
         : reject(err)
       : resolve()));
 }
