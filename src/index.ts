@@ -19,7 +19,7 @@ export { BaseDocument, ErrorType };
 export function connect(instance: mongoose.Mongoose, connStr: string): Promise<any> {
   return new Promise((resolve, reject) =>
     instance.connect(connStr, {useMongoClient: true}, (err: any) => err
-      ? reject(err)
+      ? connect(instance, connStr)
       : resolve()));
 }
 
