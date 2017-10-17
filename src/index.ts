@@ -12,13 +12,18 @@ export { BaseDocument };
 /**
  * Establishes mongoose connection.
  *
- * @param {mongoose.Mongoose} instance
+ * @param {"mongoose".Mongoose} instance
  * @param {string} connStr
+ * @param {number} timeout
+ * @param {number} retry
+ * @returns {Promise<any>}
  */
-export function connect(instance: mongoose.Mongoose, connStr: string): Promise<any> {
+export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 1000, retry = 0): Promise<any> {
   return new Promise((resolve, reject) =>
     instance.connect(connStr, {useMongoClient: true}, (err: any) => err
-      ? connect(instance, connStr)
+      ? retry < 100
+        ? setTimeout(() => connect(instance, connStr), timeout)
+        : reject(err)
       : resolve()));
 }
 
