@@ -812,7 +812,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail w/incorrect connection strings', async () => {
       (mongoose as any).Promise = Promise;
 
-      connect(mongoose, '')
+      connect(mongoose, '', 10)
         .catch(err => {
           expect(err.toString()).toContain('Invalid mongodb uri.');
         });
