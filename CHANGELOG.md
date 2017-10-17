@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.5.0...v1.5.1) (2017-10-17)
+
+
+### Bug Fixes
+
+* **afm:** fix connect promise resolution ([#26](https://github.com/azure-seed/azure-functions-mongooser/issues/26)) ([4777c7f](https://github.com/azure-seed/azure-functions-mongooser/commit/4777c7f))
+
+
+### Performance Improvements
+
+* **afm:** reduce connect timeout to 250ms ([#27](https://github.com/azure-seed/azure-functions-mongooser/issues/27)) ([f527998](https://github.com/azure-seed/azure-functions-mongooser/commit/f527998))
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.4.0...v1.5.0) (2017-10-17)
 
