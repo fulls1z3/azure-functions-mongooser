@@ -11,12 +11,6 @@ export { BaseDocument };
 
 /**
  * Establishes mongoose connection.
- *
- * @param {"mongoose".Mongoose} instance
- * @param {string} connStr
- * @param {number} timeout
- * @param {number} retry
- * @returns {Promise<any>}
  */
 export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 250, retry = 0): Promise<any> {
   return new Promise((resolve, reject) =>
@@ -29,9 +23,6 @@ export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 
 
 /**
  * Parses comma separated string field names into mongodb projection object.
- *
- * @param {string} rawFields
- * @returns {any}
  */
 export function parseFields(rawFields: string): any {
   if (!rawFields)
@@ -48,9 +39,6 @@ export function parseFields(rawFields: string): any {
 
 /**
  * Parses comma separated string populate names into mongodb population object.
- *
- * @param {string} rawPopulation
- * @returns {any}
  */
 export function parsePopulation(rawPopulation: string): any {
   if (!rawPopulation)
@@ -109,10 +97,6 @@ const getErrorResponse = (err: any) => {
 
 /**
  * Clears an existing collection using recursive retries.
- *
- * @param {"mongoose".Mongoose} instance
- * @param {string} name
- * @returns {Promise<any>}
  */
 export function clearCollection(instance: mongoose.Mongoose, name: string): Promise<any> {
   const collection = instance.connection.collections[name];
@@ -130,11 +114,6 @@ export class Mongooser<T extends BaseDocument> {
 
   /**
    * Retrieves an existing item by id.
-   *
-   * @param id
-   * @param projection
-   * @param {"mongoose".ModelPopulateOptions | Array<"mongoose".ModelPopulateOptions>} population
-   * @returns {Promise<any>}
    */
   getOne(id: any,
          projection?: any,
@@ -163,11 +142,6 @@ export class Mongooser<T extends BaseDocument> {
 
   /**
    * Retrieves existing items.
-   *
-   * @param projection
-   * @param {boolean} showInactive
-   * @param {"mongoose".ModelPopulateOptions | Array<"mongoose".ModelPopulateOptions>} population
-   * @returns {Promise<any>}
    */
   getMany(projection?: any,
           showInactive = false,
@@ -202,9 +176,6 @@ export class Mongooser<T extends BaseDocument> {
 
   /**
    * Inserts new items.
-   *
-   * @param {HttpRequest} req
-   * @returns {Promise<any>}
    */
   insertMany(req: HttpRequest): Promise<any> {
     const contentType = req.headers ? req.headers['content-type'] : undefined;
@@ -251,10 +222,6 @@ export class Mongooser<T extends BaseDocument> {
 
   /**
    * Updates (patches) an existing item.
-   *
-   * @param {HttpRequest} req
-   * @param id
-   * @returns {Promise<any>}
    */
   updateOne(req: HttpRequest, id: any): Promise<any> {
     const contentType = req.headers ? req.headers['content-type'] : undefined;
@@ -310,9 +277,6 @@ export class Mongooser<T extends BaseDocument> {
 
   /**
    * Deactivates an existing item.
-   *
-   * @param id
-   * @returns {Promise<any>}
    */
   deactivateOne(id: any): Promise<any> {
     if (!id)
