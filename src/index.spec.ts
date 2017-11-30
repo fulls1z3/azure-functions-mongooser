@@ -7,9 +7,10 @@ import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '
 // module
 import { Activatable } from './models/activatable';
 import { BaseDocument } from './models/base-document';
-import { clearCollection, connect, Mongooser, parseFields, parsePopulation } from './index';
+import { clearCollection, connect, Mongooser, parseFields, parsePopulation, parseQuery } from './index';
 
-const CONNSTRING = 'mongodb://localhost:27017/test_collection';
+//const CONNSTRING = 'mongodb://localhost:27017/test_collection';
+const CONNSTRING = 'mongodb://testing:MRMF4dBmIzuUegZJ@prime-production-shard-00-00-eybqc.mongodb.net:27017,prime-production-shard-00-01-eybqc.mongodb.net:27017,prime-production-shard-00-02-eybqc.mongodb.net:27017/testing?ssl=true&replicaSet=prime-production-shard-0&authSource=admin';
 const MOCK_ITEM = 'mockItem';
 const MOCK_CHILD_ITEM = 'mockChildItem';
 const MOCK_WRATHCHILD_ITEM = 'mockWrathchildItem';
@@ -134,13 +135,17 @@ const mock = (context: Context, req: HttpRequest): any => {
 
       switch (req.method) {
         case HttpMethod.Get:
-          const showInactive = _.get(req.query, 'showInactive', false);
+          const criteria = parseQuery(_.get(req.query, 'criteria'));
           const projection = parseFields(_.get(req.query, 'fields'));
           const population = parsePopulation(_.get(req.query, 'populate'));
+          const page = _.get(req.query, 'page', 0);
+          const perPage = _.get(req.query, 'per_page', 0);
+          const sort = decodeURIComponent(_.get(req.query, 'sort', ''));
+          const showInactive = _.get(req.query, 'showInactive', false);
 
           res = id
             ? mongooser.getOne(id, projection, population)
-            : mongooser.getMany(projection, showInactive, population);
+            : mongooser.getMany(criteria, projection, population, page, perPage, sort, showInactive);
           break;
         case HttpMethod.Post:
           res = mongooser.insertMany(req);
@@ -169,6 +174,7 @@ const mock = (context: Context, req: HttpRequest): any => {
 
 describe('@azure-seed/azure-functions-mongooser', () => {
   beforeAll(async () => {
+    global.Promise = Promise;
     (mongoose as any).Promise = Promise;
 
     await connect(mongoose, CONNSTRING);
@@ -205,7 +211,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     await mongoose.connection.close();
   });
 
-  describe('GET /api/v0/mock-items', () => {
+  describe('GET /api/mock-items', () => {
     it('should be able to return a list of `active` items', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
@@ -230,6 +236,145 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       };
 
       mock(mockContext, mockRequest);
+    });
+
+    describe('using `criteria`', () => {
+      it('should be able to return a list of `active` items w/empty criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(1);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            TEST_ID = (response as HttpResponse).body.data[0]._id;
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: ','
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return a list of `active` items w/invalid criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(1);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'invalid'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return an empty list of items w/invalid criteria (invalid query)', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(0);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'invalid::'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return an empty list of items w/invalid criteria (duplicate invalid query)', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(0);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'invalid.path::true,invalid.path::true'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return a list of `filtered` items w/criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(1);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'code::CODE'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
     });
 
     it('should be able to return a list of all items', (done: () => void) => {
@@ -351,7 +496,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     });
   });
 
-  describe('GET /api/v0/mock-items/:id', () => {
+  describe('GET /api/mock-items/:id', () => {
     it('should be able to return an object conforming the model', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
@@ -507,7 +652,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     });
   });
 
-  describe('POST /api/v0/mock-items', () => {
+  describe('POST /api/mock-items', () => {
     it('should be able to create new items', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
@@ -615,7 +760,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     });
   });
 
-  describe('PATCH /api/v0/mock-items/:id', () => {
+  describe('PATCH /api/mock-items/:id', () => {
     it('should be able to update an existing item', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
@@ -722,7 +867,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     });
   });
 
-  describe('DELETE /api/v0/mock-items/:id', () => {
+  describe('DELETE /api/mock-items/:id', () => {
     it('should be able to deactivate an existing item', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
@@ -783,7 +928,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     });
   });
 
-  describe('XYZ /api/v0/mock-items', () => {
+  describe('XYZ /api/mock-items', () => {
     it('should fail with 405 w/any other Http method', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {

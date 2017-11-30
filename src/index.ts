@@ -38,18 +38,41 @@ export function parseFields(rawFields: string): any {
 }
 
 /**
- * Parses comma separated string populate names into mongodb population object.
+ * Parses the query string into mongodb criteria object.
  */
-export function parsePopulation(rawPopulation: string): any {
-  if (!rawPopulation)
-    return '';
+export function parseQuery(rawQuery: string): any {
+  const res = {};
 
-  let obj = {};
+  if (!rawQuery)
+    return res;
 
-  for (const item of rawPopulation.split(','))
-    obj = appendObject(obj, item);
+  rawQuery.split(',').forEach(segment => {
+    if (!segment)
+      return {};
 
-  return toPopulation(obj);
+    const parts = segment.match(/([^,]+)::([^,]+|)?/);
+
+    if (!(parts && parts.length > 0))
+      return {};
+
+    const path = parts[1].match(/([^.]+)/g);
+
+    let current = res;
+
+    (path as Array<string>).forEach((m, i) => {
+      if (!current[m])
+        current[m] = {};
+
+      if (i === (path as Array<string>).length - 1)
+        current[m] = (!parts[2])
+          ? ''
+          : decodeURIComponent(parts[2]);
+      else
+        current = current[m];
+    });
+  });
+
+  return res;
 }
 
 const appendObject = (obj: any, path: string) => {
@@ -73,6 +96,21 @@ const toPopulation = (obj: any) => {
       res.push({path: key});
   }, []);
 };
+
+/**
+ * Parses comma separated string populate names into mongodb population object.
+ */
+export function parsePopulation(rawPopulation: string): any {
+  if (!rawPopulation)
+    return '';
+
+  let obj = {};
+
+  for (const item of rawPopulation.split(','))
+    obj = appendObject(obj, item);
+
+  return toPopulation(obj);
+}
 
 const getErrorResponse = (err: any) => {
   let status: HttpStatusCode | number = HttpStatusCode.InternalServerError;
@@ -143,12 +181,24 @@ export class Mongooser<T extends BaseDocument> {
   /**
    * Retrieves existing items.
    */
-  getMany(projection?: any,
-          showInactive = false,
-          population?: mongoose.ModelPopulateOptions | Array<mongoose.ModelPopulateOptions>): Promise<any> {
-    const query = this.model.find(!showInactive
-      ? {isActive: true}
-      : {}, projection).populate(population).lean();
+  getMany(criteria?: any,
+          projection?: any,
+          population?: mongoose.ModelPopulateOptions | Array<mongoose.ModelPopulateOptions>,
+          page?: number,
+          perPage?: number,
+          sort?: string,
+          showInactive?: boolean): Promise<any> {
+    if (!showInactive)
+      criteria = {...criteria, isActive: true};
+
+    // sort
+    const query = this.model
+      .find(criteria, projection)
+      .sort(sort)
+      .skip(page && perPage ? page * perPage : 0)
+      .limit(page && perPage ? perPage : 0)
+      .populate(population)
+      .lean();
 
     return query
       .then((docs: any) => {
