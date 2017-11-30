@@ -9,8 +9,7 @@ import { Activatable } from './models/activatable';
 import { BaseDocument } from './models/base-document';
 import { clearCollection, connect, Mongooser, parseFields, parsePopulation, parseQuery } from './index';
 
-//const CONNSTRING = 'mongodb://localhost:27017/test_collection';
-const CONNSTRING = 'mongodb://testing:MRMF4dBmIzuUegZJ@prime-production-shard-00-00-eybqc.mongodb.net:27017,prime-production-shard-00-01-eybqc.mongodb.net:27017,prime-production-shard-00-02-eybqc.mongodb.net:27017/testing?ssl=true&replicaSet=prime-production-shard-0&authSource=admin';
+const CONNSTRING = 'mongodb://localhost:27017/test_collection';
 const MOCK_ITEM = 'mockItem';
 const MOCK_CHILD_ITEM = 'mockChildItem';
 const MOCK_WRATHCHILD_ITEM = 'mockWrathchildItem';
