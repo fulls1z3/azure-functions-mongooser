@@ -112,6 +112,13 @@ export function parsePopulation(rawPopulation: string): any {
   return toPopulation(obj);
 }
 
+/**
+ * Parses comma separated string sort names into mongodb population object.
+ */
+export function parseSort(rawSort: string): any {
+  return rawSort.replace(/,/g, ' ');
+}
+
 const getErrorResponse = (err: any) => {
   let status: HttpStatusCode | number = HttpStatusCode.InternalServerError;
   let type: ErrorType | string = '';
@@ -156,25 +163,26 @@ export class Mongooser<T extends BaseDocument> {
   getOne(id: any,
          projection?: any,
          population?: mongoose.ModelPopulateOptions | Array<mongoose.ModelPopulateOptions>): Promise<any> {
-    const query = this.model.findOne({_id: id}, projection).populate(population).lean();
+    const query$ = this.model.findOne({_id: id}, projection).populate(population).lean();
 
-    return query.then((doc: T) => {
-      if (!doc)
-        return Promise.resolve({
-          status: HttpStatusCode.NotFound
-        });
+    return query$
+      .then((doc: T) => {
+        if (!doc)
+          return Promise.resolve({
+            status: HttpStatusCode.NotFound
+          });
 
-      const data: T = doc;
-      data._id = String(doc._id);
+        const data: T = doc;
+        data._id = String(doc._id);
 
-      return {
-        status: HttpStatusCode.OK,
-        body: {
-          _id: data._id,
-          ...JSON.parse(JSON.stringify(data))
-        }
-      };
-    })
+        return {
+          status: HttpStatusCode.OK,
+          body: {
+            _id: data._id,
+            ...JSON.parse(JSON.stringify(data))
+          }
+        };
+      })
       .catch(getErrorResponse);
   }
 
@@ -191,17 +199,26 @@ export class Mongooser<T extends BaseDocument> {
     if (!showInactive)
       criteria = {...criteria, isActive: true};
 
-    // sort
-    const query = this.model
+    const count$ = this.model
+      .find(criteria, projection)
+      .count();
+
+    const query$ = this.model
       .find(criteria, projection)
       .sort(sort)
-      .skip(page && perPage ? page * perPage : 0)
-      .limit(page && perPage ? perPage : 0)
+      .skip(Number(page) >= 0 && Number(perPage) > 0
+        ? Number(page) * Number(perPage)
+        : 0)
+      .limit(Number(page) >= 0 && Number(perPage) > 0
+        ? Number(perPage)
+        : 0)
       .populate(population)
       .lean();
 
-    return query
-      .then((docs: any) => {
+    return Promise.all([count$, query$])
+      .then((res: Array<any>) => {
+        const totalCount = res[0];
+        const docs = res[1];
         const data: Array<T> = [];
 
         for (const item of docs as Array<T>) {
@@ -216,8 +233,10 @@ export class Mongooser<T extends BaseDocument> {
           status: HttpStatusCode.OK,
           body: {
             data,
-            hasMore: false,
-            totalCount: data.length
+            hasMore: Number(page) >= 0 && Number(perPage) > 0
+              ? totalCount > (Number(page) + 1) * Number(perPage)
+              : false,
+            totalCount
           }
         };
       })
