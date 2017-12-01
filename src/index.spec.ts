@@ -7,7 +7,7 @@ import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '
 // module
 import { Activatable } from './models/activatable';
 import { BaseDocument } from './models/base-document';
-import { clearCollection, connect, Mongooser, parseFields, parsePopulation, parseQuery } from './index';
+import { clearCollection, connect, Mongooser, parseFields, parsePopulation, parseQuery, parseSort } from './index';
 
 const CONNSTRING = 'mongodb://localhost:27017/test_collection';
 const MOCK_ITEM = 'mockItem';
@@ -139,7 +139,7 @@ const mock = (context: Context, req: HttpRequest): any => {
           const population = parsePopulation(_.get(req.query, 'populate'));
           const page = _.get(req.query, 'page', 0);
           const perPage = _.get(req.query, 'per_page', 0);
-          const sort = decodeURIComponent(_.get(req.query, 'sort', ''));
+          const sort = parseSort(_.get(req.query, 'sort', ''));
           const showInactive = _.get(req.query, 'showInactive', false);
 
           res = id
@@ -488,6 +488,34 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         method: HttpMethod.Get,
         query: {
           populate: 'wrathchild,child:wrathchild1,child:wrathchild2:leaf'
+        }
+      };
+
+      mock(mockContext, mockRequest);
+    });
+
+    it('should be able to return items w/pagination', (done: () => void) => {
+      const mockContext: Context = {
+        done: (err, response) => {
+          expect(err).toBeUndefined();
+          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body).toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+          expect((response as HttpResponse).body.data.length).toEqual(1);
+          expect((response as HttpResponse).body).toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+          expect((response as HttpResponse).body).toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+          done();
+        }
+      };
+
+      const mockRequest: HttpRequest = {
+        method: HttpMethod.Get,
+        query: {
+          page: 0,
+          per_page: 1
         }
       };
 
