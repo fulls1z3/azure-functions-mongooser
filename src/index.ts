@@ -37,6 +37,26 @@ export function parseFields(rawFields: string): any {
     }, {});
 }
 
+const parseQueryValue = (queryValue: string) => {
+  queryValue = decodeURIComponent(queryValue).trim();
+
+  if (queryValue.toLowerCase() === 'null')
+    // tslint:disable-next-line
+    return null;
+  if (queryValue.toLowerCase() === 'undefined')
+    return undefined;
+  if (queryValue.toLowerCase() === 'true')
+    return true;
+  else if (queryValue.toLowerCase() === 'false')
+    return false;
+  else if (queryValue === '0')
+    return 0;
+  else if (Number(queryValue) !== 0 && !isNaN(Number(queryValue)))
+    return Number(queryValue);
+  else
+    return {$regex: queryValue, $options: 'i'};
+};
+
 /**
  * Parses the query string into mongodb criteria object.
  */
@@ -66,7 +86,7 @@ export function parseQuery(rawQuery: string): any {
       if (i === (path as Array<string>).length - 1)
         current[m] = (!parts[2])
           ? ''
-          : decodeURIComponent(parts[2]);
+          : parseQueryValue(parts[2]);
       else
         current = current[m];
     });
@@ -196,8 +216,8 @@ export class Mongooser<T extends BaseDocument> {
           perPage?: number,
           sort?: string,
           showInactive?: boolean): Promise<any> {
-    if (!showInactive)
-      criteria = {...criteria, isActive: true};
+    if (!criteria.hasOwnProperty('isActive') && !showInactive)
+        criteria = {...criteria, isActive: true};
 
     const count$ = this.model
       .find(criteria, projection)

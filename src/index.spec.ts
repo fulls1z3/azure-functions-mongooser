@@ -237,8 +237,143 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       mock(mockContext, mockRequest);
     });
 
-    describe('using `criteria`', () => {
-      it('should be able to return a list of `active` items w/empty criteria', (done: () => void) => {
+    describe('using criteria', () => {
+      it('should be able to return a list of `filtered` items w/null criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(0);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'code::null'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return a list of `filtered` items w/undefined criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(0);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'code::undefined'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return a list of `filtered` items w/boolean criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(0);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'code::true,code::false'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return a list of `filtered` items w/number criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(0);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'code::0,code::1'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return a list of `filtered` items w/string criteria', (done: () => void) => {
+        const mockContext: Context = {
+          done: (err, response) => {
+            expect(err).toBeUndefined();
+            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body).toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
+            expect((response as HttpResponse).body.data.length).toEqual(1);
+            expect((response as HttpResponse).body).toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
+            expect((response as HttpResponse).body).toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+
+            done();
+          }
+        };
+
+        const mockRequest: HttpRequest = {
+          method: HttpMethod.Get,
+          query: {
+            criteria: 'code::CODE'
+          }
+        };
+
+        mock(mockContext, mockRequest);
+      });
+
+      it('should be able to return a list of `active` items w/empty queries in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
             expect(err).toBeUndefined();
@@ -267,7 +402,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         mock(mockContext, mockRequest);
       });
 
-      it('should be able to return a list of `active` items w/invalid criteria', (done: () => void) => {
+      it('should be able to return a list of `active` items w/no query in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
             expect(err).toBeUndefined();
@@ -294,7 +429,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         mock(mockContext, mockRequest);
       });
 
-      it('should be able to return an empty list of items w/invalid criteria (invalid query)', (done: () => void) => {
+      it('should be able to return an empty list of items w/invalid query in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
             expect(err).toBeUndefined();
@@ -321,7 +456,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         mock(mockContext, mockRequest);
       });
 
-      it('should be able to return an empty list of items w/invalid criteria (duplicate invalid query)', (done: () => void) => {
+      it('should be able to return an empty list of items w/invalid queries in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
             expect(err).toBeUndefined();
@@ -341,34 +476,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'invalid.path::true,invalid.path::true'
-          }
-        };
-
-        mock(mockContext, mockRequest);
-      });
-
-      it('should be able to return a list of `filtered` items w/criteria', (done: () => void) => {
-        const mockContext: Context = {
-          done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(1);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
-
-            done();
-          }
-        };
-
-        const mockRequest: HttpRequest = {
-          method: HttpMethod.Get,
-          query: {
-            criteria: 'code::CODE'
+            criteria: 'invalid.path::nothing,invalid.path::nothing'
           }
         };
 
