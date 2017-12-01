@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.6.0"></a>
+# [1.6.0](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.5.1...v1.6.0) (2017-12-01)
+
+
+### Bug Fixes
+
+* **afm:** fix pagination ([#36](https://github.com/azure-seed/azure-functions-mongooser/issues/36)) ([3133931](https://github.com/azure-seed/azure-functions-mongooser/commit/3133931))
+
+
+### Features
+
+* **afm:** add filtering, sorting and pagination ([#35](https://github.com/azure-seed/azure-functions-mongooser/issues/35)) ([51c451d](https://github.com/azure-seed/azure-functions-mongooser/commit/51c451d))
+
+
+
 <a name="1.5.1"></a>
 ## [1.5.1](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.5.0...v1.5.1) (2017-10-17)
 
