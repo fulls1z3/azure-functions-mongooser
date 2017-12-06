@@ -285,28 +285,29 @@ export class Mongooser<T extends BaseDocument> {
         }
       });
 
-    return this.model.insertMany(req.body)
-      .then((docs: any) => {
-        const data: Array<T> = [];
+    const query$ = this.model.insertMany(req.body);
 
-        for (const item of docs as Array<T>) {
-          item._id = String(item._id);
-          data.push({
-            _id: item._id,
-            ...JSON.parse(JSON.stringify(item))
-          });
+    return query$.then((docs: any) => {
+      const data: Array<T> = [];
+
+      for (const item of docs as Array<T>) {
+        item._id = String(item._id);
+        data.push({
+          _id: item._id,
+          ...JSON.parse(JSON.stringify(item))
+        });
+      }
+
+      return {
+        status: HttpStatusCode.Created,
+        body: {
+          data,
+          hasMore: false,
+          totalCount: data.length
         }
-
-        return {
-          status: HttpStatusCode.Created,
-          body: {
-            data,
-            hasMore: false,
-            totalCount: data.length
-          }
-        };
-      })
-      .catch(getErrorResponse);
+      };
+    })
+    .catch(getErrorResponse);
   }
 
   /**
@@ -339,29 +340,30 @@ export class Mongooser<T extends BaseDocument> {
         }
       });
 
-    return this.model.findOneAndUpdate({_id: id}, req.body, {new: true}).lean()
-      .then((doc: T) => {
-        if (!doc)
-          return {
-            status: HttpStatusCode.BadRequest,
-            body: {
-              type: ErrorType.Missing
-            }
-          };
-        else {
-          const data: T = doc;
-          data._id = String(doc._id);
+    const query$ = this.model.findOneAndUpdate({_id: id}, req.body, {new: true}).lean();
 
-          return {
-            status: HttpStatusCode.OK,
-            body: {
-              _id: data._id,
-              ...JSON.parse(JSON.stringify(data))
-            }
-          };
-        }
-      })
-      .catch(getErrorResponse);
+    return query$.then((doc: T) => {
+      if (!doc)
+        return {
+          status: HttpStatusCode.BadRequest,
+          body: {
+            type: ErrorType.Missing
+          }
+        };
+      else {
+        const data: T = doc;
+        data._id = String(doc._id);
+
+        return {
+          status: HttpStatusCode.OK,
+          body: {
+            _id: data._id,
+            ...JSON.parse(JSON.stringify(data))
+          }
+        };
+      }
+    })
+    .catch(getErrorResponse);
   }
 
   /**
@@ -376,21 +378,22 @@ export class Mongooser<T extends BaseDocument> {
         }
       });
 
-    return this.model.findOneAndUpdate({_id: id}, {isActive: false}).lean()
-      .then((doc: T) => {
-        if (!doc)
-          return {
-            status: HttpStatusCode.BadRequest
-          };
-        else
-          return {
-            status: HttpStatusCode.OK,
-            body: {
-              deactivated: true,
-              _id: String(doc._id)
-            }
-          };
-      })
-      .catch(getErrorResponse);
+    const query$ = this.model.findOneAndUpdate({_id: id}, {isActive: false}).lean();
+
+    return query$.then((doc: T) => {
+      if (!doc)
+        return {
+          status: HttpStatusCode.BadRequest
+        };
+      else
+        return {
+          status: HttpStatusCode.OK,
+          body: {
+            deactivated: true,
+            _id: String(doc._id)
+          }
+        };
+    })
+    .catch(getErrorResponse);
   }
 }
