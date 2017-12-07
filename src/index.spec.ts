@@ -123,7 +123,7 @@ const mockLeafModel = new MockLeafItem().getModelForClass(MockLeafItem, {
 });
 
 const mock = (context: Context, req: HttpRequest): any => {
-  (mongoose as any).Promise = Promise;
+  (mongoose as any).Promise = global.Promise;
 
   connect(mongoose, CONNSTRING)
     .then(() => {
@@ -173,8 +173,7 @@ const mock = (context: Context, req: HttpRequest): any => {
 
 describe('@azure-seed/azure-functions-mongooser', () => {
   beforeAll(async () => {
-    global.Promise = Promise;
-    (mongoose as any).Promise = Promise;
+    (mongoose as any).Promise = global.Promise;
 
     await connect(mongoose, CONNSTRING);
 
@@ -199,7 +198,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
   });
 
   afterAll(async () => {
-    (mongoose as any).Promise = Promise;
+    (mongoose as any).Promise = global.Promise;
 
     await connect(mongoose, CONNSTRING);
     await clearCollection(mongoose, MOCK_LEAF_ITEM);
@@ -1090,7 +1089,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
 
   describe('connect', () => {
     it('should fail w/incorrect connection strings', async () => {
-      (mongoose as any).Promise = Promise;
+      (mongoose as any).Promise = global.Promise;
 
       connect(mongoose, '', 10)
         .catch(err => {
