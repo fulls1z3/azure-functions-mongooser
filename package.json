@@ -46,7 +46,7 @@
     "@types/lodash": "4.14.55",
     "@types/mongodb": "~2.2.16",
     "@types/mongoose": "~4.7.28",
-    "@types/node": "~8.0.56",
+    "@types/node": "~8.5.0",
     "rimraf": "~2.6.2",
     "ts-node": "~3.3.0",
     "glob": "~7.1.2",
