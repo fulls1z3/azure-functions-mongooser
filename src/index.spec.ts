@@ -134,7 +134,7 @@ const mock = (context: Context, req: HttpRequest): any => {
 
       switch (req.method) {
         case HttpMethod.Get:
-          const criteria = parseQuery(_.get(req.query, 'criteria'));
+          const criteria = parseQuery(_.get(req.query, 'q'));
           const projection = parseFields(_.get(req.query, 'fields'));
           const population = parsePopulation(_.get(req.query, 'populate'));
           const page = _.get(req.query, 'page', 0);
@@ -257,7 +257,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'code::null'
+            q: 'code:null'
           }
         };
 
@@ -284,7 +284,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'code::undefined'
+            q: 'code:undefined'
           }
         };
 
@@ -311,7 +311,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'code::true,code::false'
+            q: 'code:true,code:false'
           }
         };
 
@@ -338,7 +338,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'code::0,code::1'
+            q: 'code:0,code:1'
           }
         };
 
@@ -365,7 +365,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'code::CODE'
+            q: 'code:CODE'
           }
         };
 
@@ -394,7 +394,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: ','
+            q: ','
           }
         };
 
@@ -421,7 +421,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'invalid'
+            q: 'invalid'
           }
         };
 
@@ -448,7 +448,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'invalid::'
+            q: 'invalid:'
           }
         };
 
@@ -475,7 +475,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         const mockRequest: HttpRequest = {
           method: HttpMethod.Get,
           query: {
-            criteria: 'invalid.path::nothing,invalid.path::nothing'
+            q: 'invalid.path:nothing,invalid.path:nothing'
           }
         };
 

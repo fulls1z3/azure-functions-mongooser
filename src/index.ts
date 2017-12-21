@@ -70,7 +70,7 @@ export function parseQuery(rawQuery: string): any {
     if (!segment)
       return {};
 
-    const parts = segment.match(/([^,]+)::([^,]+|)?/);
+    const parts = segment.match(/([^,]+):([^,]+|)?/);
 
     if (!(parts && parts.length > 0))
       return {};
