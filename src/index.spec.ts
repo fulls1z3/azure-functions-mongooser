@@ -213,15 +213,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return a list of `active` items', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('data');
-          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-          expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body).toHaveProperty('hasMore');
-          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-          expect((response as HttpResponse).body).toHaveProperty('totalCount');
-          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data))
+            .toEqual('object');
+          expect((response as HttpResponse).body.data.length)
+            .toEqual(1);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore))
+            .toEqual('boolean');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount))
+            .toEqual('number');
 
           TEST_ID = (response as HttpResponse).body.data[0]._id;
 
@@ -240,15 +249,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return a list of `filtered` items w/null criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(0);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(0);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -267,15 +285,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return a list of `filtered` items w/undefined criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(0);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(0);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -294,15 +321,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return a list of `filtered` items w/boolean criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(0);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(0);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -321,15 +357,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return a list of `filtered` items w/number criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(0);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(0);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -348,15 +393,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return a list of `filtered` items w/string criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(1);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(1);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -375,15 +429,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return a list of `active` items w/empty queries in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(1);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(1);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             TEST_ID = (response as HttpResponse).body.data[0]._id;
 
@@ -404,15 +467,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return a list of `active` items w/no query in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(1);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(1);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -431,15 +503,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return an empty list of items w/invalid query in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(0);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(0);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -458,15 +539,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       it('should be able to return an empty list of items w/invalid queries in criteria', (done: () => void) => {
         const mockContext: Context = {
           done: (err, response) => {
-            expect(err).toBeUndefined();
-            expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-            expect((response as HttpResponse).body).toHaveProperty('data');
-            expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-            expect((response as HttpResponse).body.data.length).toEqual(0);
-            expect((response as HttpResponse).body).toHaveProperty('hasMore');
-            expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-            expect((response as HttpResponse).body).toHaveProperty('totalCount');
-            expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+            expect(err)
+              .toBeUndefined();
+            expect((response as HttpResponse).status)
+              .toEqual(HttpStatusCode.OK);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('data');
+            expect(typeof((response as HttpResponse).body.data))
+              .toEqual('object');
+            expect((response as HttpResponse).body.data.length)
+              .toEqual(0);
+            expect((response as HttpResponse).body)
+              .toHaveProperty('hasMore');
+            expect(typeof((response as HttpResponse).body.hasMore))
+              .toEqual('boolean');
+            expect((response as HttpResponse).body)
+              .toHaveProperty('totalCount');
+            expect(typeof((response as HttpResponse).body.totalCount))
+              .toEqual('number');
 
             done();
           }
@@ -486,15 +576,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return a list of all items', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('data');
-          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-          expect((response as HttpResponse).body.data.length).toEqual(2);
-          expect((response as HttpResponse).body).toHaveProperty('hasMore');
-          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-          expect((response as HttpResponse).body).toHaveProperty('totalCount');
-          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data))
+            .toEqual('object');
+          expect((response as HttpResponse).body.data.length)
+            .toEqual(2);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore))
+            .toEqual('boolean');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount))
+            .toEqual('number');
 
           done();
         }
@@ -513,17 +612,27 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return projected fields', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('data');
-          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-          expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body).toHaveProperty('hasMore');
-          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-          expect((response as HttpResponse).body).toHaveProperty('totalCount');
-          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data))
+            .toEqual('object');
+          expect((response as HttpResponse).body.data.length)
+            .toEqual(1);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore))
+            .toEqual('boolean');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount))
+            .toEqual('number');
 
-          expect((response as HttpResponse).body.data[0]).toHaveProperty('code');
+          expect((response as HttpResponse).body.data[0])
+            .toHaveProperty('code');
 
           done();
         }
@@ -542,17 +651,27 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return populated fields', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('data');
-          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-          expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body).toHaveProperty('hasMore');
-          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-          expect((response as HttpResponse).body).toHaveProperty('totalCount');
-          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data))
+            .toEqual('object');
+          expect((response as HttpResponse).body.data.length)
+            .toEqual(1);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore))
+            .toEqual('boolean');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount))
+            .toEqual('number');
 
-          expect((response as HttpResponse).body.data[0].child).toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].child)
+            .toHaveProperty('name');
 
           done();
         }
@@ -571,21 +690,35 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return populated fields (deep)', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('data');
-          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-          expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body).toHaveProperty('hasMore');
-          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-          expect((response as HttpResponse).body).toHaveProperty('totalCount');
-          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data))
+            .toEqual('object');
+          expect((response as HttpResponse).body.data.length)
+            .toEqual(1);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore))
+            .toEqual('boolean');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount))
+            .toEqual('number');
 
-          expect((response as HttpResponse).body.data[0].child).toHaveProperty('name');
-          expect((response as HttpResponse).body.data[0].wrathchild).toHaveProperty('name');
-          expect((response as HttpResponse).body.data[0].child.wrathchild1).toHaveProperty('name');
-          expect((response as HttpResponse).body.data[0].child.wrathchild2).toHaveProperty('name');
-          expect((response as HttpResponse).body.data[0].child.wrathchild2.leaf).toHaveProperty('bananas');
+          expect((response as HttpResponse).body.data[0].child)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].wrathchild)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].child.wrathchild1)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].child.wrathchild2)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.data[0].child.wrathchild2.leaf)
+            .toHaveProperty('bananas');
 
           done();
         }
@@ -604,15 +737,24 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return items w/pagination', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('data');
-          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-          expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body).toHaveProperty('hasMore');
-          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-          expect((response as HttpResponse).body).toHaveProperty('totalCount');
-          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data))
+            .toEqual('object');
+          expect((response as HttpResponse).body.data.length)
+            .toEqual(1);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore))
+            .toEqual('boolean');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount))
+            .toEqual('number');
 
           done();
         }
@@ -634,14 +776,22 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return an object conforming the model', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body).toHaveProperty('_id');
-          expect(typeof((response as HttpResponse).body._id)).toEqual('string');
-          expect((response as HttpResponse).body).toHaveProperty('code');
-          expect(typeof((response as HttpResponse).body.code)).toEqual('string');
-          expect((response as HttpResponse).body).toHaveProperty('name');
-          expect(typeof((response as HttpResponse).body.name)).toEqual('string');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('_id');
+          expect(typeof((response as HttpResponse).body._id))
+            .toEqual('string');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('code');
+          expect(typeof((response as HttpResponse).body.code))
+            .toEqual('string');
+          expect((response as HttpResponse).body)
+            .toHaveProperty('name');
+          expect(typeof((response as HttpResponse).body.name))
+            .toEqual('string');
 
           done();
         }
@@ -660,11 +810,16 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return an item', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
-          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id)
+            .toEqual(TEST_ID);
+          expect((response as HttpResponse).body.code)
+            .toEqual(INITIAL_ITEMS[0].code);
+          expect((response as HttpResponse).body.name)
+            .toEqual(INITIAL_ITEMS[0].name);
 
           done();
         }
@@ -683,10 +838,14 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return an item w/projected fields', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id)
+            .toEqual(TEST_ID);
+          expect((response as HttpResponse).body.code)
+            .toEqual(INITIAL_ITEMS[0].code);
 
           done();
         }
@@ -708,13 +867,19 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return an item w/populated fields', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
-          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id)
+            .toEqual(TEST_ID);
+          expect((response as HttpResponse).body.code)
+            .toEqual(INITIAL_ITEMS[0].code);
+          expect((response as HttpResponse).body.name)
+            .toEqual(INITIAL_ITEMS[0].name);
 
-          expect((response as HttpResponse).body.child).toHaveProperty('name');
+          expect((response as HttpResponse).body.child)
+            .toHaveProperty('name');
 
           done();
         }
@@ -736,17 +901,27 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to return an item w/populated fields (deep)', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.code).toEqual(INITIAL_ITEMS[0].code);
-          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id)
+            .toEqual(TEST_ID);
+          expect((response as HttpResponse).body.code)
+            .toEqual(INITIAL_ITEMS[0].code);
+          expect((response as HttpResponse).body.name)
+            .toEqual(INITIAL_ITEMS[0].name);
 
-          expect((response as HttpResponse).body.child).toHaveProperty('name');
-          expect((response as HttpResponse).body.wrathchild).toHaveProperty('name');
-          expect((response as HttpResponse).body.child.wrathchild1).toHaveProperty('name');
-          expect((response as HttpResponse).body.child.wrathchild2).toHaveProperty('name');
-          expect((response as HttpResponse).body.child.wrathchild2.leaf).toHaveProperty('bananas');
+          expect((response as HttpResponse).body.child)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.wrathchild)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.child.wrathchild1)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.child.wrathchild2)
+            .toHaveProperty('name');
+          expect((response as HttpResponse).body.child.wrathchild2.leaf)
+            .toHaveProperty('bananas');
 
           done();
         }
@@ -768,8 +943,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 404 w/o an existing id', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.NotFound);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.NotFound);
 
           done();
         }
@@ -790,19 +967,32 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to create new items', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.Created);
-          expect((response as HttpResponse).body).toHaveProperty('data');
-          expect(typeof((response as HttpResponse).body.data)).toEqual('object');
-          expect((response as HttpResponse).body.data.length).toEqual(1);
-          expect((response as HttpResponse).body.data[0]).toHaveProperty('_id');
-          expect((response as HttpResponse).body.data[0].code).toEqual(POST_VALUE.code);
-          expect((response as HttpResponse).body.data[0].name).toEqual(POST_VALUE.name);
-          expect((response as HttpResponse).body).toHaveProperty('hasMore');
-          expect(typeof((response as HttpResponse).body.hasMore)).toEqual('boolean');
-          expect((response as HttpResponse).body.hasMore).toBeFalsy();
-          expect((response as HttpResponse).body).toHaveProperty('totalCount');
-          expect(typeof((response as HttpResponse).body.totalCount)).toEqual('number');
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.Created);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('data');
+          expect(typeof((response as HttpResponse).body.data))
+            .toEqual('object');
+          expect((response as HttpResponse).body.data.length)
+            .toEqual(1);
+          expect((response as HttpResponse).body.data[0])
+            .toHaveProperty('_id');
+          expect((response as HttpResponse).body.data[0].code)
+            .toEqual(POST_VALUE.code);
+          expect((response as HttpResponse).body.data[0].name)
+            .toEqual(POST_VALUE.name);
+          expect((response as HttpResponse).body)
+            .toHaveProperty('hasMore');
+          expect(typeof((response as HttpResponse).body.hasMore))
+            .toEqual('boolean');
+          expect((response as HttpResponse).body.hasMore)
+            .toBeFalsy();
+          expect((response as HttpResponse).body)
+            .toHaveProperty('totalCount');
+          expect(typeof((response as HttpResponse).body.totalCount))
+            .toEqual('number');
 
           done();
         }
@@ -820,8 +1010,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o `content-type` header', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -837,8 +1029,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o request body', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -855,8 +1049,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 409 on idempotent request', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.Conflict);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.Conflict);
 
           done();
         }
@@ -877,8 +1073,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 422 w/o required properties', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.UnprocessableEntity);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.UnprocessableEntity);
 
           done();
         }
@@ -898,11 +1096,16 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to update an existing item', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
-          expect((response as HttpResponse).body.code).toEqual(PATCH_VALUE.code);
-          expect((response as HttpResponse).body.name).toEqual(INITIAL_ITEMS[0].name);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body._id)
+            .toEqual(TEST_ID);
+          expect((response as HttpResponse).body.code)
+            .toEqual(PATCH_VALUE.code);
+          expect((response as HttpResponse).body.name)
+            .toEqual(INITIAL_ITEMS[0].name);
 
           done();
         }
@@ -923,8 +1126,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o `content-type` header', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -941,8 +1146,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o id', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -960,8 +1167,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o an existing id', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -982,8 +1191,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o request body', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -1005,10 +1216,14 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should be able to deactivate an existing item', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.OK);
-          expect((response as HttpResponse).body.deactivated).toBeTruthy();
-          expect((response as HttpResponse).body._id).toEqual(TEST_ID);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.OK);
+          expect((response as HttpResponse).body.deactivated)
+            .toBeTruthy();
+          expect((response as HttpResponse).body._id)
+            .toEqual(TEST_ID);
 
           done();
         }
@@ -1027,8 +1242,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o id', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -1044,8 +1261,10 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 400 w/o an existing id', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.BadRequest);
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.BadRequest);
 
           done();
         }
@@ -1066,9 +1285,12 @@ describe('@azure-seed/azure-functions-mongooser', () => {
     it('should fail with 405 w/any other Http method', (done: () => void) => {
       const mockContext: Context = {
         done: (err, response) => {
-          expect(err).toBeUndefined();
-          expect((response as HttpResponse).status).toEqual(HttpStatusCode.MethodNotAllowed);
-          expect((response as HttpResponse).body).toEqual({
+          expect(err)
+            .toBeUndefined();
+          expect((response as HttpResponse).status)
+            .toEqual(HttpStatusCode.MethodNotAllowed);
+          expect((response as HttpResponse).body)
+            .toEqual({
             error: {
               type: 'not_supported',
               message: 'Method XYZ not supported.'
@@ -1093,7 +1315,8 @@ describe('@azure-seed/azure-functions-mongooser', () => {
 
       connect(mongoose, '', 10)
         .catch(err => {
-          expect(err.toString()).toContain('Invalid mongodb uri.');
+          expect(err.toString())
+            .toContain('Invalid mongodb uri.');
         });
     });
   });

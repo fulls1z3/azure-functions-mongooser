@@ -91,6 +91,7 @@
   "greenkeeper": {
     "ignore": [
       "@types/lodash",
+      "mongoose",
       "typegoose",
       "rollup"
     ]
