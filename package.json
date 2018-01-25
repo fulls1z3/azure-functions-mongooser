@@ -1,6 +1,6 @@
 {
   "name": "azure-functions-mongooser",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "Mongoose-based RESTful API implementation on Azure Functions with TypeScript",
   "repository": {
     "type": "git",
