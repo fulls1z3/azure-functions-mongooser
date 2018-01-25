@@ -73,7 +73,8 @@ const reportDiagnostics = diagnostics => {
 };
 
 const parseConfig = project => {
-  const configFileText = readFileSync(project).toString();
+  const configFileText = readFileSync(project)
+    .toString();
 
   const result = ts.parseConfigFileTextToJson(project, configFileText);
   const configObject = result.config;
@@ -100,7 +101,8 @@ const tsc = (project: string) => {
     const program = ts.createProgram(config.fileNames, config.options);
     const emitResult = program.emit();
 
-    reportDiagnostics(ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics));
+    reportDiagnostics(ts.getPreEmitDiagnostics(program)
+      .concat(emitResult.diagnostics));
 
     resolve(emitResult.emitSkipped ? 1 : 0);
   });

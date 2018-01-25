@@ -32,7 +32,8 @@ export function parseFields(rawFields: string): any {
     return {};
 
   return rawFields.split(',')
-    .map(cur => String(cur).trim())
+    .map(cur => String(cur)
+      .trim())
     .reduce((acc, cur) => {
       acc[cur] = 1;
 
@@ -41,7 +42,8 @@ export function parseFields(rawFields: string): any {
 }
 
 const parseQueryValue = (queryValue: string) => {
-  queryValue = decodeURIComponent(queryValue).trim();
+  queryValue = decodeURIComponent(queryValue)
+    .trim();
 
   if (queryValue.toLowerCase() === 'null')
     // tslint:disable-next-line
@@ -69,31 +71,32 @@ export function parseQuery(rawQuery: string): any {
   if (!rawQuery)
     return res;
 
-  rawQuery.split(',').forEach(segment => {
-    if (!segment)
-      return {};
+  rawQuery.split(',')
+    .forEach(segment => {
+      if (!segment)
+        return {};
 
-    const parts = segment.match(/([^,]+):([^,]+|)?/);
+      const parts = segment.match(/([^,]+):([^,]+|)?/);
 
-    if (!(parts && parts.length > 0))
-      return {};
+      if (!(parts && parts.length > 0))
+        return {};
 
-    const path = parts[1].match(/([^.]+)/g);
+      const path = parts[1].match(/([^.]+)/g);
 
-    let current = res;
+      let current = res;
 
-    (path as Array<string>).forEach((m, i) => {
-      if (!current[m])
-        current[m] = {};
+      (path as Array<string>).forEach((m, i) => {
+        if (!current[m])
+          current[m] = {};
 
-      if (i === (path as Array<string>).length - 1)
-        current[m] = (!parts[2])
-          ? ''
-          : parseQueryValue(parts[2]);
-      else
-        current = current[m];
+        if (i === (path as Array<string>).length - 1)
+          current[m] = (!parts[2])
+            ? ''
+            : parseQueryValue(parts[2]);
+        else
+          current = current[m];
+      });
     });
-  });
 
   return res;
 }
@@ -186,7 +189,9 @@ export class Mongooser<T extends BaseDocument> {
   getOne(id: any,
          projection?: any,
          population?: mongoose.ModelPopulateOptions | Array<mongoose.ModelPopulateOptions>): Promise<any> {
-    const query$ = this.model.findOne({_id: id}, projection).populate(population).lean();
+    const query$ = this.model.findOne({_id: id}, projection)
+      .populate(population)
+      .lean();
 
     return query$
       .then((doc: T) => {
@@ -343,7 +348,8 @@ export class Mongooser<T extends BaseDocument> {
         }
       });
 
-    const query$ = this.model.findOneAndUpdate({_id: id}, req.body, {new: true}).lean();
+    const query$ = this.model.findOneAndUpdate({_id: id}, req.body, {new: true})
+      .lean();
 
     return query$.then((doc: T) => {
       if (!doc)
@@ -381,7 +387,8 @@ export class Mongooser<T extends BaseDocument> {
         }
       });
 
-    const query$ = this.model.findOneAndUpdate({_id: id}, {isActive: false}).lean();
+    const query$ = this.model.findOneAndUpdate({_id: id}, {isActive: false})
+      .lean();
 
     return query$.then((doc: T) => {
       if (!doc)
