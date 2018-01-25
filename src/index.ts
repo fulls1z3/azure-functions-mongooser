@@ -1,4 +1,5 @@
 // libs
+import { Promise as bluebird } from 'bluebird';
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
 import { ErrorType, HttpRequest, HttpStatusCode } from 'azure-functions-ts-essentials';
@@ -9,12 +10,14 @@ import { BaseDocument } from './models/base-document';
 export { Activatable } from './models/activatable';
 export { BaseDocument };
 
+global.Promise = bluebird;
+
 /**
  * Establishes mongoose connection.
  */
 export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 250, retry = 0): Promise<any> {
   return new Promise((resolve, reject) =>
-    instance.connect(connStr, {useMongoClient: true}, (err: any) => err
+    instance.connect(connStr, {promiseLibrary: bluebird, useMongoClient: true}, (err: any) => err
       ? retry < 100
         ? setTimeout(() => resolve(connect(instance, connStr)), timeout)
         : reject(err)
