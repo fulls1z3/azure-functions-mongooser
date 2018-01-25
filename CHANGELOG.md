@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.6.5"></a>
+## [1.6.5](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.6.4...v1.6.5) (2018-01-25)
+
+
+### Bug Fixes
+
+* **afm:** fix tslint ([#59](https://github.com/azure-seed/azure-functions-mongooser/issues/59)) ([412ff2a](https://github.com/azure-seed/azure-functions-mongooser/commit/412ff2a))
+
+
+### Performance Improvements
+
+* **afm:** use bluebird for underlying connections ([#60](https://github.com/azure-seed/azure-functions-mongooser/issues/60)) ([c5c474c](https://github.com/azure-seed/azure-functions-mongooser/commit/c5c474c))
+
+
+
 <a name="1.6.4"></a>
 ## [1.6.4](https://github.com/azure-seed/azure-functions-mongooser/compare/v1.6.3...v1.6.4) (2017-12-21)
 
