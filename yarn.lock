@@ -40,7 +40,7 @@
     "@types/events" "*"
     "@types/node" "*"
 
-"@types/mongoose@^4.7.1", "@types/mongoose@~4.7.33":
+"@types/mongoose@^4.7.1":
   version "4.7.33"
   resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-4.7.33.tgz#de77cd613f261c7662bb175102ebc128dce71250"
   dependencies:
@@ -48,7 +48,15 @@
     "@types/mongodb" "*"
     "@types/node" "*"
 
-"@types/node@*":
+"@types/mongoose@~5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.0.0.tgz#b6f150a37541556f51fdfefdfe4e0da8fd3b95d7"
+  dependencies:
+    "@types/events" "*"
+    "@types/mongodb" "*"
+    "@types/node" "*"
+
+"@types/node@*", "@types/node@~9.3.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.3.0.tgz#3a129cda7c4e5df2409702626892cb4b96546dd5"
 
