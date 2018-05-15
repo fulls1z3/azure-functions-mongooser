@@ -39,37 +39,37 @@
   "typings": "./index.d.ts",
   "devDependencies": {
     "bluebird": "~3.5.1",
-    "lodash": "~4.17.4",
+    "lodash": "~4.17.10",
     "azure-functions-ts-essentials": "1.3.1",
-    "mongoose": "~4.13.8",
+    "mongoose": "4.13.9",
     "typegoose": "3.4.7",
     "@types/bluebird": "~3.5.20",
-    "@types/jest": "~22.1.0",
-    "@types/lodash": "4.14.55",
-    "@types/mongodb": "~3.0.5",
-    "@types/mongoose": "~5.0.0",
-    "@types/node": "~9.4.0",
+    "@types/jest": "~22.2.3",
+    "@types/lodash": "~4.14.108",
+    "@types/mongodb": "~3.0.18",
+    "@types/mongoose": "4.7.33",
+    "@types/node": "~10.0.9",
     "rimraf": "~2.6.2",
-    "ts-node": "~4.1.0",
+    "ts-node": "~6.0.3",
     "glob": "~7.1.2",
-    "camelcase": "~4.1.0",
+    "camelcase": "~5.0.0",
     "rollup": "~0.42.0",
-    "rollup-plugin-node-resolve": "~3.0.2",
+    "rollup-plugin-node-resolve": "~3.3.0",
     "rollup-plugin-commonjs": "~8.3.0",
     "rollup-plugin-sourcemaps": "~0.4.2",
     "rollup-plugin-uglify": "~3.0.0",
-    "jest": "~22.1.4",
+    "jest": "~22.4.3",
     "jest-junit-reporter": "~1.1.0",
-    "ts-jest": "~22.0.1",
+    "ts-jest": "~22.4.6",
     "standard-version": "~4.3.0",
-    "tslint": "~5.9.1",
-    "backend-tslint-rules": "1.2.0",
-    "typescript": "~2.6.2"
+    "tslint": "~5.10.0",
+    "backend-tslint-rules": "1.3.0",
+    "typescript": "~2.8.3"
   },
   "peerDependencies": {
     "azure-functions-ts-essentials": ">=1.3.1",
-    "lodash": ">=4.17.4",
-    "mongoose": ">=4.13.6",
+    "lodash": ">=4.17.10",
+    "mongoose": "4.13.9",
     "typegoose": "3.4.7"
   },
   "jest": {
@@ -90,10 +90,11 @@
   },
   "greenkeeper": {
     "ignore": [
-      "@types/lodash",
+      "@types/mongoose",
       "mongoose",
-      "typegoose",
-      "rollup"
+      "rollup",
+      "rollup-plugin-commonjs",
+      "typegoose"
     ]
   }
 }

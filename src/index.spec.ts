@@ -1,5 +1,5 @@
 // libs
-import * as _ from 'lodash';
+import { get, getOr } from 'lodash/fp';
 import * as mongoose from 'mongoose';
 import { prop, Ref } from 'typegoose';
 import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from 'azure-functions-ts-essentials';
@@ -128,19 +128,19 @@ const mock = (context: Context, req: HttpRequest): any => {
   connect(mongoose, CONNSTRING)
     .then(() => {
       let res: Promise<HttpResponse>;
-      const id = _.get(req.params, 'id');
+      const id = get('id', req.params);
 
       const mongooser = new Mongooser<MockItem>(mockItemModel);
 
       switch (req.method) {
         case HttpMethod.Get:
-          const criteria = parseQuery(_.get(req.query, 'q'));
-          const projection = parseFields(_.get(req.query, 'fields'));
-          const population = parsePopulation(_.get(req.query, 'populate'));
-          const page = _.get(req.query, 'page', 0);
-          const perPage = _.get(req.query, 'per_page', 0);
-          const sort = parseSort(_.get(req.query, 'sort', ''));
-          const showInactive = _.get(req.query, 'showInactive', false);
+          const criteria = parseQuery(get('q', req.query));
+          const projection = parseFields(get('fields', req.query));
+          const population = parsePopulation(get('populate', req.query));
+          const page = getOr(0, 'page', req.query);
+          const perPage = getOr(0, 'per_page', req.query);
+          const sort = parseSort(getOr('', 'sort', req.query));
+          const showInactive = getOr(false, 'showInactive', req.query);
 
           res = id
             ? mongooser.getOne(id, projection, population)
