@@ -1,6 +1,6 @@
 // libs
 import { Promise as bluebird } from 'bluebird';
-import * as _ from 'lodash';
+import { transform } from 'lodash/fp';
 import * as mongoose from 'mongoose';
 import { ErrorType, HttpRequest, HttpStatusCode } from 'azure-functions-ts-essentials';
 
@@ -27,14 +27,14 @@ export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 
 /**
  * Parses comma separated string field names into mongodb projection object.
  */
-export function parseFields(rawFields: string): any {
+export function parseFields(rawFields: string | any): any {
   if (!rawFields)
     return {};
 
   return rawFields.split(',')
-    .map(cur => String(cur)
+    .map((cur: string) => String(cur)
       .trim())
-    .reduce((acc, cur) => {
+    .reduce((acc: Array<any>, cur: any) => {
       acc[cur] = 1;
 
       return acc;
@@ -65,14 +65,14 @@ const parseQueryValue = (queryValue: string) => {
 /**
  * Parses the query string into mongodb criteria object.
  */
-export function parseQuery(rawQuery: string): any {
+export function parseQuery(rawQuery: string | any): any {
   const res = {};
 
   if (!rawQuery)
     return res;
 
   rawQuery.split(',')
-    .forEach(segment => {
+    .forEach((segment: string) => {
       if (!segment)
         return {};
 
@@ -111,22 +111,20 @@ const appendObject = (obj: any, path: string) => {
   return obj;
 };
 
-const toPopulation = (obj: any) => {
-  return _.transform(obj, (res: Array<any>, value: Array<any>, key: string) => {
-    if (typeof(value) === 'object')
-      res.push({
-        path: key,
-        populate: toPopulation(value)
-      });
-    else
-      res.push({path: key});
-  }, []);
-};
+const toPopulation = (obj: any) => (transform as any).convert({cap: false})((res: Array<any>, value: Array<any>, key: string) => {
+  if (typeof(value) === 'object')
+    res.push({
+      path: key,
+      populate: toPopulation(value)
+    });
+  else
+    res.push({path: key});
+}, [], obj);
 
 /**
  * Parses comma separated string populate names into mongodb population object.
  */
-export function parsePopulation(rawPopulation: string): any {
+export function parsePopulation(rawPopulation: string | any): any {
   if (!rawPopulation)
     return '';
 
@@ -141,7 +139,7 @@ export function parsePopulation(rawPopulation: string): any {
 /**
  * Parses comma separated string sort names into mongodb population object.
  */
-export function parseSort(rawSort: string): any {
+export function parseSort(rawSort: string | any): any {
   return rawSort.replace(/,/g, ' ');
 }
 
@@ -220,10 +218,10 @@ export class Mongooser<T extends BaseDocument> {
   getMany(criteria?: any,
           projection?: any,
           population?: mongoose.ModelPopulateOptions | Array<mongoose.ModelPopulateOptions>,
-          page?: number,
-          perPage?: number,
-          sort?: string,
-          showInactive?: boolean): Promise<any> {
+          page?: number | any,
+          perPage?: number | any,
+          sort?: string | any,
+          showInactive?: boolean | any): Promise<any> {
     if (!criteria.hasOwnProperty('isActive') && !showInactive)
         criteria = {...criteria, isActive: true};
 
