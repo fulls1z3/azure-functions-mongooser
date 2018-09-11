@@ -40,9 +40,9 @@
     "@types/events" "*"
     "@types/node" "*"
 
-"@types/mongodb@~3.0.18":
-  version "3.0.18"
-  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.0.18.tgz#e5775ba9c15bf1601e57ada52d9fcbc6d6095d18"
+"@types/mongodb@~3.1.6":
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.1.6.tgz#219980392830226314479e86e267d4a5d85782c8"
   dependencies:
     "@types/bson" "*"
     "@types/events" "*"
