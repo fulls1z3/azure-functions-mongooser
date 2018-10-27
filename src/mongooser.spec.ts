@@ -7,7 +7,8 @@ import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '
 // module
 import { Activatable } from './models/activatable';
 import { BaseDocument } from './models/base-document';
-import { clearCollection, connect, Mongooser, parseFields, parsePopulation, parseQuery, parseSort } from './index';
+import { deactivateOne, getMany, getOne, insertMany, updateOne } from './mongooser';
+import { clearCollection, connect, parseFields, parsePopulation, parseQuery, parseSort } from './util';
 
 const CONNSTRING = 'mongodb://localhost:27017/test_collection';
 const MOCK_ITEM = 'mockItem';
@@ -122,41 +123,34 @@ const mockLeafModel = new MockLeafItem().getModelForClass(MockLeafItem, {
   }
 });
 
-const mock = (context: Context, req: HttpRequest): any => {
+const mock = (context: Context, req: HttpRequest) => {
   (mongoose as any).Promise = global.Promise;
 
   connect(mongoose, CONNSTRING)
     .then(() => {
-      let res: Promise<HttpResponse>;
-      const id = get('id', req.params);
-
-      const mongooser = new Mongooser<MockItem>(mockItemModel);
+      const id = get('id')(req.params);
 
       switch (req.method) {
         case HttpMethod.Get:
-          const criteria = parseQuery(get('q', req.query));
-          const projection = parseFields(get('fields', req.query));
-          const population = parsePopulation(get('populate', req.query));
-          const page = getOr(0, 'page', req.query);
-          const perPage = getOr(0, 'per_page', req.query);
-          const sort = parseSort(getOr('', 'sort', req.query));
-          const showInactive = getOr(false, 'showInactive', req.query);
+          const criteria = parseQuery(get('q')(req.query));
+          const projection = parseFields(get('fields')(req.query));
+          const population = parsePopulation(get('populate')(req.query));
+          const page = get('page')(req.query);
+          const perPage = get('per_page')(req.query);
+          const sort = parseSort(get('sort')(req.query));
+          const showInactive = get('showInactive')(req.query);
 
-          res = id
-            ? mongooser.getOne(id, projection, population)
-            : mongooser.getMany(criteria, projection, population, page, perPage, sort, showInactive);
-          break;
+          return id
+            ? getOne<MockItem>(id, projection, population)(mockItemModel)
+            : getMany<MockItem>(criteria, projection, population, page, perPage, sort, showInactive)(mockItemModel);
         case HttpMethod.Post:
-          res = mongooser.insertMany(req);
-          break;
+          return insertMany<MockItem>(req)(mockItemModel);
         case HttpMethod.Patch:
-          res = mongooser.updateOne(req, id);
-          break;
+          return updateOne<MockItem>(req, id)(mockItemModel);
         case HttpMethod.Delete:
-          res = mongooser.deactivateOne(id);
-          break;
+          return deactivateOne<MockItem>(id)(mockItemModel);
         default:
-          res = Promise.resolve({
+          return Promise.resolve({
             status: HttpStatusCode.MethodNotAllowed,
             body: {
               error: {
@@ -166,8 +160,10 @@ const mock = (context: Context, req: HttpRequest): any => {
             }
           });
       }
-
-      res.then(r => context.done(undefined, r));
+    })
+    .then(res => {
+      mongoose.connection.close()
+        .then(() => context.done(undefined, res));
     });
 };
 
@@ -211,7 +207,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
 
   describe('GET /api/mock-items', () => {
     it('should be able to return a list of `active` items', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -237,17 +233,16 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     describe('using criteria', () => {
       it('should be able to return a list of `filtered` items w/null criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -271,19 +266,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'code:null'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return a list of `filtered` items w/undefined criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -307,19 +301,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'code:undefined'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return a list of `filtered` items w/boolean criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -343,19 +336,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'code:true,code:false'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return a list of `filtered` items w/number criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -379,19 +371,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'code:0,code:1'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return a list of `filtered` items w/string criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -415,19 +406,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'code:CODE'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return a list of `active` items w/empty queries in criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -453,19 +443,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: ','
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return a list of `active` items w/no query in criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -489,19 +478,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'invalid'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return an empty list of items w/invalid query in criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -525,19 +513,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'invalid:'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
 
       it('should be able to return an empty list of items w/invalid queries in criteria', (done: () => void) => {
-        const mockContext: Context = {
+        const context = {
           done: (err, response) => {
             expect(err)
               .toBeUndefined();
@@ -561,20 +548,19 @@ describe('@azure-seed/azure-functions-mongooser', () => {
             done();
           }
         };
-
-        const mockRequest: HttpRequest = {
+        const req = {
           method: HttpMethod.Get,
           query: {
             q: 'invalid.path:nothing,invalid.path:nothing'
           }
         };
 
-        mock(mockContext, mockRequest);
+        mock(context, req);
       });
     });
 
     it('should be able to return a list of all items', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -598,19 +584,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           showInactive: true
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return projected fields', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -637,19 +622,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           fields: 'code'
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return populated fields', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -676,19 +660,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           populate: 'child'
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return populated fields (deep)', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -723,19 +706,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           populate: 'wrathchild,child:wrathchild1,child:wrathchild2:leaf'
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return items w/pagination', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -759,8 +741,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           page: 0,
@@ -768,13 +749,13 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
   });
 
   describe('GET /api/mock-items/:id', () => {
     it('should be able to return an object conforming the model', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -796,19 +777,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         params: {
           id: TEST_ID
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return an item', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -824,19 +804,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         params: {
           id: TEST_ID
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return an item w/projected fields', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -850,8 +829,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           fields: 'code'
@@ -861,11 +839,11 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return an item w/populated fields', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -884,8 +862,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           populate: 'child'
@@ -895,11 +872,11 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should be able to return an item w/populated fields (deep)', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -926,8 +903,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         query: {
           populate: 'wrathchild,child:wrathchild1,child:wrathchild2:leaf'
@@ -937,11 +913,11 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 404 w/o an existing id', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -951,21 +927,20 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Get,
         params: {
           id: INVALID_ID
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
   });
 
   describe('POST /api/mock-items', () => {
     it('should be able to create new items', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -997,18 +972,17 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Post,
         headers: { 'content-type': 'application/json' },
         body: POST_VALUE
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o `content-type` header', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1018,16 +992,15 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Post
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o request body', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1037,17 +1010,16 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Post,
         headers: { 'content-type': 'application/json' }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 409 on idempotent request', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1057,8 +1029,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Post,
         headers: { 'content-type': 'application/json' },
         body: {
@@ -1067,11 +1038,11 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 422 w/o required properties', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1081,20 +1052,19 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Post,
         headers: { 'content-type': 'application/json' },
         body: INVALID_VALUE
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
   });
 
   describe('PATCH /api/mock-items/:id', () => {
     it('should be able to update an existing item', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1110,8 +1080,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Patch,
         headers: { 'content-type': 'application/json' },
         body: PATCH_VALUE,
@@ -1120,11 +1089,11 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o `content-type` header', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1134,17 +1103,16 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Patch,
         body: PATCH_VALUE
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o id', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1154,18 +1122,17 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Patch,
         headers: { 'content-type': 'application/json' },
         body: PATCH_VALUE
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o an existing id', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1175,8 +1142,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Patch,
         headers: { 'content-type': 'application/json' },
         body: PATCH_VALUE,
@@ -1185,11 +1151,11 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o request body', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1199,8 +1165,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Patch,
         headers: { 'content-type': 'application/json' },
         params: {
@@ -1208,13 +1173,13 @@ describe('@azure-seed/azure-functions-mongooser', () => {
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
   });
 
   describe('DELETE /api/mock-items/:id', () => {
     it('should be able to deactivate an existing item', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1228,19 +1193,18 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Delete,
         params: {
           id: TEST_ID
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o id', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1250,16 +1214,15 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Delete
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
 
     it('should fail with 400 w/o an existing id', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1269,21 +1232,20 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: HttpMethod.Delete,
         params: {
           id: INVALID_ID
         }
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
   });
 
   describe('XYZ /api/mock-items', () => {
     it('should fail with 405 w/any other Http method', (done: () => void) => {
-      const mockContext: Context = {
+      const context = {
         done: (err, response) => {
           expect(err)
             .toBeUndefined();
@@ -1300,12 +1262,11 @@ describe('@azure-seed/azure-functions-mongooser', () => {
           done();
         }
       };
-
-      const mockRequest: HttpRequest = {
+      const req = {
         method: 'XYZ' as HttpMethod
       };
 
-      mock(mockContext, mockRequest);
+      mock(context, req);
     });
   });
 
@@ -1316,7 +1277,7 @@ describe('@azure-seed/azure-functions-mongooser', () => {
       connect(mongoose, '', 10)
         .catch(err => {
           expect(err.toString())
-            .toContain('Invalid mongodb uri.');
+            .toContain('Invalid mongodb uri');
         });
     });
   });
