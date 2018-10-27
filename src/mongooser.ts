@@ -86,7 +86,7 @@ export function getMany<T extends BaseDocument>(criteria?: any,
           hasMore: Number(page) >= 0 && Number(perPage) > 0
             ? count > (Number(page) + 1) * Number(perPage)
             : false,
-          count
+          totalCount: count
         }
       }))
       .catch(getErrorResponse);

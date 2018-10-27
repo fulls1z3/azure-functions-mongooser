@@ -1,6 +1,5 @@
 // libs
 import { Promise as bluebird } from 'bluebird';
-import { transform } from 'lodash/fp';
 import * as mongoose from 'mongoose';
 import { ErrorType, HttpStatusCode } from 'azure-functions-ts-essentials';
 
@@ -18,24 +17,6 @@ export function connect(instance: mongoose.Mongoose, connStr: string, timeout = 
       : resolve()));
 }
 
-/**
- * Parses comma separated string field names into mongodb projection object.
- */
-export function parseFields(rawFields: string | any): any {
-  if (!rawFields)
-    return {};
-
-  return rawFields
-    .split(',')
-    .map((cur: string) => String(cur)
-      .trim())
-    .reduce((acc: Array<string>, cur: string) => {
-      acc[cur] = 1;
-
-      return acc;
-    }, {});
-}
-
 const parseQueryValue = (queryValue: string) => {
   queryValue = decodeURIComponent(queryValue)
     .trim();
@@ -43,9 +24,9 @@ const parseQueryValue = (queryValue: string) => {
   if (queryValue.toLowerCase() === 'null')
   // tslint:disable-next-line
     return null;
-  if (queryValue.toLowerCase() === 'undefined')
+  else if (queryValue.toLowerCase() === 'undefined')
     return undefined;
-  if (queryValue.toLowerCase() === 'true')
+  else if (queryValue.toLowerCase() === 'true')
     return true;
   else if (queryValue.toLowerCase() === 'false')
     return false;
@@ -60,6 +41,7 @@ const parseQueryValue = (queryValue: string) => {
 /**
  * Parses the query string into mongodb criteria object.
  */
+// TODO: immutable
 export function parseQuery(rawQuery: string | any): any {
   const res = {};
 
@@ -97,6 +79,20 @@ export function parseQuery(rawQuery: string | any): any {
   return res;
 }
 
+/**
+ * Parses comma separated string field names into mongodb projection object.
+ */
+export function parseFields(rawFields: string | any): any {
+  return String(rawFields).split(',')
+    .map((cur: string) => String(cur)
+      .trim())
+    .reduce((acc: any, cur: string) => ({
+      ...acc,
+      [cur]: 1
+    }), {});
+}
+
+// TODO: immutable
 const appendObject = (obj: any, path: string) => {
   const keys: Array<any> = path.split(':');
   const lastKey = keys.pop();
@@ -108,20 +104,18 @@ const appendObject = (obj: any, path: string) => {
   return obj;
 };
 
-const toPopulation = (obj: any) => (transform as any)
-  .convert({cap: false})((res: Array<any>, value: Array<any>, key: string) => [
-    ...res,
-    {
-      path: key,
-      ...(typeof(value) === 'object'
-        ? {populate: toPopulation(value)}
-        : {})
-    }
-  ], [], obj);
+const toPopulation = obj => Object.keys(obj)
+  .map(key => ({
+    path: key,
+    ...(typeof(obj[key]) === 'object'
+      ? {populate: toPopulation(obj[key])}
+      : undefined)
+  }));
 
 /**
  * Parses comma separated string populate names into mongodb population object.
  */
+// TODO: immutable
 export function parsePopulation(rawPopulation: string | any): any {
   if (!rawPopulation)
     return '';
@@ -138,9 +132,11 @@ export function parsePopulation(rawPopulation: string | any): any {
  * Parses comma separated string sort names into mongodb population object.
  */
 export function parseSort(rawSort: string | any): any {
-  return rawSort.replace(/,/g, ' ');
+  return String(rawSort)
+    .replace(/,/g, ' ');
 }
 
+// TODO: immutable
 export const getErrorResponse = (err: any) => {
   let status: HttpStatusCode | number = HttpStatusCode.InternalServerError;
   let type: ErrorType | string = '';
