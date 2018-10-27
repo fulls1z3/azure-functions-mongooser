@@ -7,7 +7,8 @@ import { Context, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '
 // module
 import { Activatable } from './models/activatable';
 import { BaseDocument } from './models/base-document';
-import { clearCollection, connect, Mongooser, parseFields, parsePopulation, parseQuery, parseSort } from './index';
+import { deactivateOne, getMany, getOne, insertMany, updateOne } from './mongooser';
+import { clearCollection, connect, parseFields, parsePopulation, parseQuery, parseSort } from './util';
 
 const CONNSTRING = 'mongodb://localhost:27017/test_collection';
 const MOCK_ITEM = 'mockItem';
@@ -130,8 +131,6 @@ const mock = (context: Context, req: HttpRequest): any => {
       let res: Promise<HttpResponse>;
       const id = get('id', req.params);
 
-      const mongooser = new Mongooser<MockItem>(mockItemModel);
-
       switch (req.method) {
         case HttpMethod.Get:
           const criteria = parseQuery(get('q', req.query));
@@ -143,17 +142,17 @@ const mock = (context: Context, req: HttpRequest): any => {
           const showInactive = getOr(false, 'showInactive', req.query);
 
           res = id
-            ? mongooser.getOne(id, projection, population)
-            : mongooser.getMany(criteria, projection, population, page, perPage, sort, showInactive);
+            ? getOne<MockItem>(id, projection, population)(mockItemModel)
+            : getMany<MockItem>(criteria, projection, population, page, perPage, sort, showInactive)(mockItemModel);
           break;
         case HttpMethod.Post:
-          res = mongooser.insertMany(req);
+          res = insertMany<MockItem>(req)(mockItemModel);
           break;
         case HttpMethod.Patch:
-          res = mongooser.updateOne(req, id);
+          res = updateOne<MockItem>(req, id)(mockItemModel);
           break;
         case HttpMethod.Delete:
-          res = mongooser.deactivateOne(id);
+          res = deactivateOne<MockItem>(id)(mockItemModel);
           break;
         default:
           res = Promise.resolve({
@@ -167,7 +166,8 @@ const mock = (context: Context, req: HttpRequest): any => {
           });
       }
 
-      res.then(r => context.done(undefined, r));
+      res
+        .then(r => context.done(undefined, r));
     });
 };
 
