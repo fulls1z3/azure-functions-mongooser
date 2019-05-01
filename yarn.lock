@@ -43,7 +43,6 @@
 "@types/mongodb@~3.1.26":
   version "3.1.26"
   resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.1.26.tgz#6877554353fd9e9d03f28c62de09bad616ed7142"
-  integrity sha512-i7+l95IbqnGLRW+AJ6F2nzqosLUgU022lDuoHhbQquMV7tgek0vNUg9RwC2Fn7ImBSQSFdCWeU394ciPEwSeaQ==
   dependencies:
     "@types/bson" "*"
     "@types/node" "*"
