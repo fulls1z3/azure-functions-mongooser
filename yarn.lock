@@ -28,9 +28,10 @@
   version "22.2.3"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.3.tgz#0157c0316dc3722c43a7b71de3fdf3acbccef10d"
 
-"@types/lodash@~4.14.108":
-  version "4.14.108"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.108.tgz#02656af3add2e5b3174f830862c47421c00ef817"
+"@types/lodash@~4.14.129":
+  version "4.14.129"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.129.tgz#9aaca391db126802482655c48dd79a814488202f"
+  integrity sha512-oYaV0eSlnOacOr7i4X1FFdH8ttSlb57gu3I9MuStIv2CYkISEY84dNHYsC3bF6sNH7qYcu1BtVrCtQ8Q4KPTfQ==
 
 "@types/mongodb@*":
   version "3.0.5"
