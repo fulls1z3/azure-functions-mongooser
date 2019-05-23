@@ -31,7 +31,6 @@
 "@types/lodash@~4.14.131":
   version "4.14.131"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.131.tgz#24a5471054de864a467586d5ec007a188f510005"
-  integrity sha512-N5Jrj0vI8nViKxZ0raEp1ku95JrrC6i/eF/s1wgPsW354QSIC7tonlk9spm5IFjcWTOvdCKqGhV+A8nxsj/Mog==
 
 "@types/mongodb@*":
   version "3.0.5"
