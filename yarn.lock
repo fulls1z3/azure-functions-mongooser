@@ -40,12 +40,12 @@
     "@types/events" "*"
     "@types/node" "*"
 
-"@types/mongodb@~3.0.18":
-  version "3.0.18"
-  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.0.18.tgz#e5775ba9c15bf1601e57ada52d9fcbc6d6095d18"
+"@types/mongodb@~3.3.5":
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/@types/mongodb/-/mongodb-3.3.5.tgz#a43c47007555b8bf7681a08682d044cb0cd2fb74"
+  integrity sha512-AAOGny19/FbFR++oUYRnda3/nocidXkMaqxQz/eqRXKaYX/YZJtAVSAplXWYiNusuY9vLJvMSy2k5P4RWX60MA==
   dependencies:
     "@types/bson" "*"
-    "@types/events" "*"
     "@types/node" "*"
 
 "@types/mongoose@4.7.33", "@types/mongoose@^4.7.1":
